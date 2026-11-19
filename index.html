@@ -1,0 +1,2083 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Calculadora de Salário Líquido — Professores MS (2026)</title>
+  <meta name="description" content="Calculadora interativa de salário líquido real, descontos (INSS, IRRF 2026, CASSEMS, FETEMS), custo de vida e direitos para professores de Mato Grosso do Sul. Criado por Luiz Martins." />
+  <meta name="author" content="Luiz Martins" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Calculadora de Salário Líquido — Professores MS (2026)" />
+  <meta property="og:description" content="Simule seu salário líquido real, descontos de INSS/IRRF 2026/CASSEMS, melhor carga horária e poder de compra em MS." />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230f766e'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='bold' font-size='28'%3ER$%3C/text%3E%3C/svg%3E" />
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    html.font-xsmall { font-size: 12px; }
+    html.font-small { font-size: 14px; }
+    html.font-normal { font-size: 16px; }
+    html.font-large { font-size: 18px; }
+    html.font-xlarge { font-size: 20px; }
+    select, input[type="number"], input[type="text"] { min-height: 42px; }
+    @media (max-width: 640px) {
+      input, select { font-size: 16px !important; }
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      border-radius: 9999px;
+      background: #0f766e;
+      cursor: pointer;
+      border: 2px solid #ffffff;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+    }
+    input[type="range"]::-moz-range-thumb {
+      width: 20px;
+      height: 20px;
+      border-radius: 9999px;
+      background: #0f766e;
+      cursor: pointer;
+      border: 2px solid #ffffff;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.25);
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased selection:bg-teal-100 selection:text-teal-900">
+
+  <div class="max-w-6xl mx-auto px-4 py-6 sm:px-6 lg:px-8">
+    <!-- Cabeçalho -->
+    <header class="bg-gradient-to-br from-teal-800 via-teal-700 to-emerald-700 rounded-2xl p-6 sm:p-8 text-white shadow-lg mb-6">
+      <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
+        <div>
+          <div class="inline-flex items-center gap-2 bg-white/15 backdrop-blur-sm text-teal-50 text-xs font-semibold px-3 py-1 rounded-full mb-3">
+            <span>Vigência 2026</span>
+            <span>•</span>
+            <span>Rede Estadual MS &amp; IRRF 2026</span>
+          </div>
+          <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">
+            Calculadora de Salário Líquido Real
+          </h1>
+          <p class="text-teal-50 text-sm sm:text-base mt-1.5 max-w-2xl leading-relaxed">
+            Descubra em segundos quanto realmente cai na sua conta, quais são os descontos e qual carga horária compensa mais.
+          </p>
+        </div>
+
+        <!-- Controle Compacto de Tamanho da Letra (5 níveis) -->
+        <div class="inline-flex items-center gap-1 bg-white/15 backdrop-blur-sm p-1 rounded-xl self-start shrink-0 max-w-full" role="group" aria-label="Tamanho da letra">
+          <span class="text-[11px] font-semibold text-teal-50 px-1.5 hidden sm:inline">Letra:</span>
+          <button type="button" id="btnFontXSmall" data-font="font-xsmall" title="Muito pequena"
+            class="font-ctrl-btn h-7 px-2 rounded-lg text-[11px] font-bold text-white hover:bg-white/20 transition cursor-pointer">
+            A--
+          </button>
+          <button type="button" id="btnFontSmall" data-font="font-small" title="Pequena"
+            class="font-ctrl-btn h-7 px-2 rounded-lg text-[11px] font-bold text-white hover:bg-white/20 transition cursor-pointer">
+            A-
+          </button>
+          <button type="button" id="btnFontNormal" data-font="font-normal" title="Padrão"
+            class="font-ctrl-btn h-7 px-2 rounded-lg text-xs font-bold bg-white text-teal-900 shadow-sm transition cursor-pointer">
+            A
+          </button>
+          <button type="button" id="btnFontLarge" data-font="font-large" title="Grande"
+            class="font-ctrl-btn h-7 px-2 rounded-lg text-xs font-bold text-white hover:bg-white/20 transition cursor-pointer">
+            A+
+          </button>
+          <button type="button" id="btnFontXLarge" data-font="font-xlarge" title="Extra grande"
+            class="font-ctrl-btn h-7 px-2 rounded-lg text-xs font-bold text-white hover:bg-white/20 transition cursor-pointer">
+            A++
+          </button>
+        </div>
+      </div>
+
+      <!-- Navegação por Abas (Deslizável no celular) -->
+      <nav class="flex sm:flex-wrap overflow-x-auto no-scrollbar gap-2 mt-6 pt-4 border-t border-white/15 pb-1" aria-label="Seções da calculadora">
+        <button type="button" data-tab="simulador"
+          class="tab-btn shrink-0 whitespace-nowrap bg-white text-teal-900 font-semibold text-sm px-4 py-2.5 rounded-xl shadow-sm transition cursor-pointer">
+          1. Simulador do Holerite
+        </button>
+        <button type="button" data-tab="tabela"
+          class="tab-btn shrink-0 whitespace-nowrap bg-white/10 hover:bg-white/20 text-white font-medium text-sm px-4 py-2.5 rounded-xl transition cursor-pointer">
+          2. Tabela Salarial (3 a 48 Aulas)
+        </button>
+        <button type="button" data-tab="otimizador"
+          class="tab-btn shrink-0 whitespace-nowrap bg-white/10 hover:bg-white/20 text-white font-medium text-sm px-4 py-2.5 rounded-xl transition cursor-pointer">
+          3. Melhor Carga Horária
+        </button>
+        <button type="button" data-tab="podercompra"
+          class="tab-btn shrink-0 whitespace-nowrap bg-white/10 hover:bg-white/20 text-white font-medium text-sm px-4 py-2.5 rounded-xl transition cursor-pointer">
+          4. Custo de Vida, Cesta &amp; ICMS
+        </button>
+        <button type="button" data-tab="direitos"
+          class="tab-btn shrink-0 whitespace-nowrap bg-white/10 hover:bg-white/20 text-white font-medium text-sm px-4 py-2.5 rounded-xl transition cursor-pointer">
+          5. Direitos, Carreira &amp; FETEMS
+        </button>
+        <button type="button" data-tab="regras"
+          class="tab-btn shrink-0 whitespace-nowrap bg-white/10 hover:bg-white/20 text-white font-medium text-sm px-4 py-2.5 rounded-xl transition cursor-pointer">
+          6. Como Calculamos (Fórmulas e Leis)
+        </button>
+      </nav>
+      <p class="sm:hidden text-xs text-teal-100/80 mt-1.5">Deslize as abas para o lado para ver todas as análises →</p>
+    </header>
+
+    <!-- ABA 1: SIMULADOR INDIVIDUAL -->
+    <section id="tab-simulador" class="tab-panel space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <!-- Coluna de Parâmetros -->
+        <div class="lg:col-span-5 bg-white rounded-2xl p-5 sm:p-6 shadow-sm border border-slate-200/80 space-y-5">
+          <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <h2 class="text-lg font-bold text-slate-900">Seus Dados de Lotação</h2>
+            <button id="btnReset" type="button" class="text-xs font-medium text-teal-700 hover:text-teal-900 underline cursor-pointer">
+              Restaurar padrão
+            </button>
+          </div>
+
+          <!-- Modo de Cálculo -->
+          <div>
+            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 mb-2">
+              Modo de Entrada
+            </label>
+            <div class="grid grid-cols-2 gap-2 bg-slate-100 p-1 rounded-xl">
+              <button type="button" id="modeTabelaBtn"
+                class="py-2 px-3 rounded-lg text-xs sm:text-sm font-semibold bg-white text-teal-800 shadow-sm transition cursor-pointer">
+                Tabela SED-MS 2026
+              </button>
+              <button type="button" id="modeCustomBtn"
+                class="py-2 px-3 rounded-lg text-xs sm:text-sm font-medium text-slate-600 hover:text-slate-900 transition cursor-pointer">
+                Salário Personalizado
+              </button>
+            </div>
+          </div>
+
+          <!-- Campos do Modo Tabela SED-MS -->
+          <div id="tabelaInputs" class="space-y-4">
+            <div>
+              <label for="selectTabela" class="block text-sm font-semibold text-slate-700 mb-1.5">
+                Enquadramento (Decreto nº 16.754/2026)
+              </label>
+              <select id="selectTabela"
+                class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-800 focus:border-teal-600 focus:ring-2 focus:ring-teal-600/20 outline-none">
+                <option value="A">Tabela A — Unidades Escolares, CEI-ZEDU e Centros Estaduais</option>
+                <option value="B">Tabela B — Órgãos SED, Treinamento Esportivo e Arte/Cultura</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="selectFormacao" class="block text-sm font-semibold text-slate-700 mb-1.5">
+                Formação Profissional
+              </label>
+              <select id="selectFormacao"
+                class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-800 focus:border-teal-600 focus:ring-2 focus:ring-teal-600/20 outline-none">
+                <option value="licenciatura">Graduação com Licenciatura / Pós / Mestrado / Doutorado</option>
+                <option value="sem_licenciatura">Graduação sem Licenciatura</option>
+                <option value="normal_medio">Normal Médio / Magistério</option>
+              </select>
+              <p id="formacaoNota" class="text-xs text-slate-500 mt-1.5"></p>
+            </div>
+
+            <!-- Carga Horária -->
+            <div class="bg-slate-50 rounded-xl p-4 border border-slate-200/70">
+              <div class="flex items-center justify-between mb-2">
+                <label for="rangeAulas" class="text-sm font-semibold text-slate-700">
+                  Carga Horária de Lotação
+                </label>
+                <div class="flex items-center gap-1.5">
+                  <input id="inputAulas" type="number" min="1" max="48" step="any" value="48"
+                    class="w-20 text-center font-bold text-teal-800 bg-white border border-slate-300 rounded-lg py-1 text-sm focus:border-teal-600 outline-none" />
+                  <span class="text-xs font-medium text-slate-500">h/aulas</span>
+                </div>
+              </div>
+              <input id="rangeAulas" type="range" min="1" max="48" step="0.5" value="48"
+                class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer" />
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-3 text-center">
+                <div class="bg-white rounded-lg p-2 border border-slate-200/70">
+                  <div class="text-[11px] text-slate-500">CH Semanal</div>
+                  <div id="infoHorasRelativas" class="text-sm font-bold text-slate-800">40,0 h</div>
+                </div>
+                <div class="bg-white rounded-lg p-2 border border-slate-200/70">
+                  <div class="text-[11px] text-slate-500">Holerite (180h)</div>
+                  <div id="infoHorasMes" class="text-sm font-bold text-teal-800">180,00 h</div>
+                </div>
+                <div class="bg-white rounded-lg p-2 border border-slate-200/70">
+                  <div class="text-[11px] text-slate-500">Em Sala (2/3)</div>
+                  <div id="infoAulasSala" class="text-sm font-bold text-slate-800">32 aulas</div>
+                </div>
+                <div class="bg-white rounded-lg p-2 border border-slate-200/70">
+                  <div class="text-[11px] text-slate-500">Hora-Atividade</div>
+                  <div id="infoHoraAtividade" class="text-sm font-bold text-slate-800">16 aulas</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Campo do Modo Personalizado -->
+          <div id="customInputs" class="hidden space-y-3">
+            <div>
+              <label for="inputCustomBruto" class="block text-sm font-semibold text-slate-700 mb-1.5">
+                Salário Bruto Mensal (R$)
+              </label>
+              <input id="inputCustomBruto" type="number" min="0" step="0.01" value="7799.00"
+                class="w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-base font-bold text-slate-900 focus:border-teal-600 focus:ring-2 focus:ring-teal-600/20 outline-none" />
+              <p class="text-xs text-slate-500 mt-1">
+                Use este modo para simular outros vínculos, acúmulos de cargo ou adicionais.
+              </p>
+            </div>
+          </div>
+
+          <!-- Adicional / Incentivo Noturno -->
+          <div class="bg-indigo-50/70 rounded-xl p-3.5 border border-indigo-200/70 space-y-3">
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="text-sm font-semibold text-indigo-950">Incentivo Noturno (10%)</div>
+                <div class="text-xs text-indigo-700">Ensino noturno a partir das 18h (LC 087/2000)</div>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input id="toggleNoturno" type="checkbox" class="sr-only peer" />
+                <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-indigo-600"></div>
+              </label>
+            </div>
+            <div id="noturnoBox" class="hidden pt-2 border-t border-indigo-200/60 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+              <label for="inputHorasNoturno" class="text-xs font-medium text-indigo-900">
+                Horas noturnas no mês (Cód. 49)
+              </label>
+              <div class="flex items-center gap-1.5">
+                <input id="inputHorasNoturno" type="number" min="0" max="180" step="any" value="0"
+                  class="w-20 text-center font-bold text-indigo-900 bg-white border border-indigo-300 rounded-lg py-1 text-xs focus:border-indigo-600 outline-none" />
+                <span class="text-xs text-indigo-700">h/mês</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Deduções e Opcionais -->
+          <div class="pt-2 border-t border-slate-100 space-y-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <div class="text-sm font-semibold text-slate-700">Dependentes no IRRF</div>
+                <div class="text-xs text-slate-500">R$ 189,59 por dependente</div>
+              </div>
+              <div class="flex items-center gap-2">
+                <button id="btnDepMinus" type="button" aria-label="Remover dependente"
+                  class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 font-bold text-slate-700 transition cursor-pointer">−</button>
+                <span id="valDependentes" class="w-6 text-center font-bold text-slate-900">0</span>
+                <button id="btnDepPlus" type="button" aria-label="Adicionar dependente"
+                  class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 font-bold text-slate-700 transition cursor-pointer">+</button>
+              </div>
+            </div>
+
+            <!-- CASSEMS -->
+            <div class="bg-teal-50/70 rounded-xl p-3.5 border border-teal-200/70 space-y-3">
+              <div class="flex items-center justify-between">
+                <div>
+                  <div class="text-sm font-semibold text-teal-950">Plano de Saúde CASSEMS</div>
+                  <div class="text-xs text-teal-700">6% sobre o bruto + R$ 35,00 por beneficiário</div>
+                </div>
+                <label class="relative inline-flex items-center cursor-pointer">
+                  <input id="toggleCassems" type="checkbox" checked class="sr-only peer" />
+                  <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-teal-600"></div>
+                </label>
+              </div>
+              <div id="cassemsBenefBox" class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 pt-2 border-t border-teal-200/60">
+                <label for="selectCassemsBenef" class="text-xs font-medium text-teal-900 leading-snug">
+                  Beneficiários na Contribuição Fixa (teto R$ 140)
+                </label>
+                <select id="selectCassemsBenef"
+                  class="w-full sm:w-auto max-w-full rounded-lg border border-teal-300 bg-white px-2.5 py-1.5 text-xs font-semibold text-teal-900 outline-none">
+                  <option value="1">1 (Titular: R$ 35,00)</option>
+                  <option value="2">2 (R$ 70,00)</option>
+                  <option value="3">3 (R$ 105,00)</option>
+                  <option value="4">4+ (Teto: R$ 140,00)</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- Mensalidade FETEMS (2%) -->
+            <div class="bg-amber-50/70 rounded-xl p-3.5 border border-amber-200/70 flex items-center justify-between">
+              <div>
+                <div class="text-sm font-semibold text-amber-950">Mensalidade FETEMS (2%)</div>
+                <div class="text-xs text-amber-800">2% sobre o vencimento base (Cód. 409)</div>
+              </div>
+              <label class="relative inline-flex items-center cursor-pointer">
+                <input id="toggleFetems" type="checkbox" class="sr-only peer" />
+                <div class="w-11 h-6 bg-slate-300 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-amber-600"></div>
+              </label>
+            </div>
+
+            <!-- Outros campos opcionais -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label for="inputPensao" class="block text-xs font-semibold text-slate-600 mb-1">
+                  Pensão Alimentícia (R$)
+                </label>
+                <input id="inputPensao" type="number" min="0" step="0.01" value="0"
+                  class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 focus:border-teal-600 outline-none" />
+              </div>
+              <div>
+                <label for="inputOutrosDescontos" class="block text-xs font-semibold text-slate-600 mb-1">
+                  Outros Descontos (R$)
+                </label>
+                <input id="inputOutrosDescontos" type="number" min="0" step="0.01" value="0"
+                  class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 focus:border-teal-600 outline-none" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Coluna de Resultados -->
+        <div class="lg:col-span-7 space-y-6">
+          <!-- Cards Principais -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80">
+              <div class="text-xs font-semibold uppercase tracking-wider text-slate-500">Salário Bruto</div>
+              <div id="resBruto" class="text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">R$ 7.799,00</div>
+              <div id="resBrutoSub" class="text-xs text-slate-500 mt-1">Base 40h (48 aulas) • Tabela A</div>
+            </div>
+
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80">
+              <div class="text-xs font-semibold uppercase tracking-wider text-slate-500">Total de Descontos</div>
+              <div id="resTotalDescontos" class="text-2xl sm:text-3xl font-extrabold text-rose-600 mt-1">- R$ 2.137,96</div>
+              <div id="resDescontosPct" class="text-xs text-slate-500 mt-1">27,4% do salário bruto</div>
+            </div>
+
+            <div class="bg-gradient-to-br from-emerald-600 to-teal-700 rounded-2xl p-5 shadow-md text-white sm:col-span-2">
+              <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <div>
+                  <div class="text-xs font-semibold uppercase tracking-wider text-emerald-100">
+                    Salário Líquido Real Estimado
+                  </div>
+                  <div id="resLiquidoPrincipal" class="text-3xl sm:text-4xl font-extrabold mt-1">R$ 5.661,04</div>
+                  <div id="resLiquidoTag" class="text-xs text-emerald-100 mt-1">Com desconto da CASSEMS incluído</div>
+                </div>
+                <div class="bg-white/15 backdrop-blur-sm rounded-xl p-3 sm:text-right">
+                  <div id="resComparativoLabel" class="text-[11px] font-medium text-emerald-100">Sem CASSEMS seria:</div>
+                  <div id="resComparativoValor" class="text-lg font-bold text-white">R$ 6.163,98</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Detalhamento dos Descontos + Gráfico -->
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-6">
+            <div class="md:col-span-7 bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80">
+              <h3 class="text-base font-bold text-slate-900 mb-3">Detalhamento dos Descontos</h3>
+              <div class="divide-y divide-slate-100 text-sm">
+                <div class="py-2.5 flex items-center justify-between">
+                  <div>
+                    <span class="font-semibold text-slate-800">INSS (2026)</span>
+                    <p id="detInssInfo" class="text-xs text-slate-500">Alíquota progressiva (faixa 14%)</p>
+                  </div>
+                  <span id="detInssVal" class="font-bold text-rose-600">- R$ 893,37</span>
+                </div>
+                <div class="py-2.5 flex items-center justify-between">
+                  <div>
+                    <div class="flex items-center gap-1.5">
+                      <span class="font-semibold text-slate-800">IRRF (2026)</span>
+                      <span id="badgeIrpf" class="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 hidden">ISENTO</span>
+                    </div>
+                    <p id="detIrpfInfo" class="text-xs text-slate-500">Base de cálculo e redução Lei 15.270</p>
+                  </div>
+                  <span id="detIrpfVal" class="font-bold text-rose-600">- R$ 741,65</span>
+                </div>
+                <div class="py-2.5 flex items-center justify-between">
+                  <div>
+                    <span class="font-semibold text-slate-800">CASSEMS</span>
+                    <p id="detCassemsInfo" class="text-xs text-slate-500">6% bruto + R$ 35,00 fixo</p>
+                  </div>
+                  <span id="detCassemsVal" class="font-bold text-rose-600">- R$ 502,94</span>
+                </div>
+                <div id="rowFetems" class="py-2.5 flex items-center justify-between hidden">
+                  <div>
+                    <span class="font-semibold text-slate-800">FETEMS - Mensalidade</span>
+                    <p class="text-xs text-slate-500">2% sobre o vencimento base</p>
+                  </div>
+                  <span id="detFetemsVal" class="font-bold text-rose-600">- R$ 0,00</span>
+                </div>
+                <div id="rowPensao" class="py-2.5 flex items-center justify-between hidden">
+                  <div>
+                    <span class="font-semibold text-slate-800">Pensão Alimentícia</span>
+                    <p class="text-xs text-slate-500">Dedutível na base do IRRF</p>
+                  </div>
+                  <span id="detPensaoVal" class="font-bold text-rose-600">- R$ 0,00</span>
+                </div>
+                <div id="rowOutros" class="py-2.5 flex items-center justify-between hidden">
+                  <div>
+                    <span class="font-semibold text-slate-800">Outros Descontos</span>
+                    <p class="text-xs text-slate-500">Consignado, sindicato, etc.</p>
+                  </div>
+                  <span id="detOutrosVal" class="font-bold text-rose-600">- R$ 0,00</span>
+                </div>
+              </div>
+
+              <!-- Box Memória Passo a Passo Completa do Holerite -->
+              <div class="mt-4 bg-slate-50 rounded-xl p-4 border border-slate-200/80 text-xs sm:text-sm text-slate-700 space-y-2 leading-relaxed">
+                <div class="font-bold text-slate-900 border-b border-slate-200 pb-1.5">
+                  Passo a Passo das Contas do Seu Contracheque:
+                </div>
+                <div id="memPassoBruto"></div>
+                <div id="memPassoInss"></div>
+                <div id="memIrpfLinha1"></div>
+                <div id="memIrpfLinha2"></div>
+                <div id="memIrpfLinha3" class="font-semibold text-teal-900"></div>
+                <div id="memPassoLiquido" class="pt-1.5 border-t border-slate-200 font-bold text-emerald-900"></div>
+              </div>
+            </div>
+
+            <div class="md:col-span-5 bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 flex flex-col justify-between gap-4">
+              <div>
+                <h3 class="text-base font-bold text-slate-900 mb-2">Destino do Salário</h3>
+                <div class="relative h-52">
+                  <canvas id="salaryChart"></canvas>
+                </div>
+              </div>
+              <div class="grid grid-cols-2 gap-2.5 pt-3 border-t border-slate-100 text-center">
+                <div class="bg-emerald-50/80 rounded-xl p-2.5 border border-emerald-200/70">
+                  <div class="text-[11px] font-semibold text-emerald-800">Líquido / Aula</div>
+                  <div id="simLiqPorAula" class="text-sm font-extrabold text-emerald-950 mt-0.5">R$ 0,00</div>
+                </div>
+                <div class="bg-slate-50 rounded-xl p-2.5 border border-slate-200/70">
+                  <div class="text-[11px] font-semibold text-slate-600">Você Fica Com</div>
+                  <div id="simRetencaoPct" class="text-sm font-extrabold text-slate-900 mt-0.5">0,0%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABA 2: TABELA COMPLETA E COMPARADOR DE FAIXAS (3h a 48h/a) -->
+    <section id="tab-tabela" class="tab-panel hidden space-y-5">
+      <!-- Painel Comparador de Faixas Salariais -->
+      <div class="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-200/80 space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-slate-100 pb-3">
+          <div>
+            <h2 class="text-lg font-bold text-slate-900">Comparador de Faixas Salariais</h2>
+            <p class="text-xs sm:text-sm text-slate-600 mt-0.5">
+              Adicione quantas cargas horárias quiser para comparar bruto, descontos e ganho líquido lado a lado.
+            </p>
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            <input id="inputAddCompAulas" type="number" min="3" max="48" step="1" placeholder="Aulas (3-48)"
+              class="w-32 rounded-xl border border-slate-300 px-3 py-1.5 text-sm font-semibold text-slate-800 focus:border-teal-600 outline-none" />
+            <button type="button" id="btnAddCompAulas"
+              class="bg-teal-700 hover:bg-teal-800 text-white font-semibold text-xs sm:text-sm px-3.5 py-2 rounded-xl transition cursor-pointer">
+              + Adicionar
+            </button>
+          </div>
+        </div>
+
+        <!-- Cards das Cargas Comparadas -->
+        <div id="compCardsContainer" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3"></div>
+
+        <!-- Ações abaixo do comparador -->
+        <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-slate-100">
+          <button type="button" id="btnFillBestComp"
+            class="inline-flex items-center gap-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-900 font-semibold text-xs sm:text-sm px-3.5 py-2 rounded-xl border border-emerald-200 transition cursor-pointer">
+            ★ Preencher com maiores custo-benefício
+          </button>
+          <button type="button" id="btnClearComp"
+            class="text-xs sm:text-sm font-medium text-slate-500 hover:text-rose-600 underline px-2 py-1 cursor-pointer">
+            Limpar comparação
+          </button>
+        </div>
+      </div>
+
+      <!-- Tabela Progressiva Completa -->
+      <div class="bg-white rounded-2xl p-4 sm:p-6 shadow-sm border border-slate-200/80">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-4">
+          <div>
+            <h2 class="text-lg font-bold text-slate-900">Tabela Progressiva por Carga Horária (3 a 48 aulas)</h2>
+            <p id="tabelaSubtitulo" class="text-xs sm:text-sm text-slate-500">
+              Valores calculados com base no enquadramento selecionado na aba Simulador.
+            </p>
+          </div>
+          <div class="flex items-center gap-2">
+            <label for="filtroAulas" class="text-xs font-semibold text-slate-600">Filtrar aulas:</label>
+            <input id="filtroAulas" type="text" placeholder="Ex: 20, 24, 48"
+              class="w-36 rounded-lg border border-slate-300 px-3 py-1.5 text-sm focus:border-teal-600 outline-none" />
+          </div>
+        </div>
+
+        <div class="overflow-x-auto rounded-xl border border-slate-200">
+          <table class="min-w-full divide-y divide-slate-200 text-xs sm:text-sm">
+            <thead class="bg-slate-100 text-slate-700 font-semibold">
+              <tr>
+                <th class="px-3 py-3 text-left sticky left-0 bg-slate-100 z-10 shadow-xs">Lotação</th>
+                <th class="px-3 py-3 text-center">Comparar</th>
+                <th class="px-3 py-3 text-left">CH Relativa</th>
+                <th class="px-3 py-3 text-left">Sala / HA</th>
+                <th class="px-3 py-3 text-right">Bruto</th>
+                <th class="px-3 py-3 text-right">INSS 2026</th>
+                <th class="px-3 py-3 text-right">IRRF 2026</th>
+                <th class="px-3 py-3 text-right">CASSEMS</th>
+                <th class="px-3 py-3 text-right text-emerald-800">Líquido s/ CASSEMS</th>
+                <th class="px-3 py-3 text-right text-teal-800">Líquido c/ CASSEMS</th>
+              </tr>
+            </thead>
+            <tbody id="tabelaCorpo" class="divide-y divide-slate-100 bg-white"></tbody>
+          </table>
+        </div>
+        <p class="text-xs text-slate-500 mt-3">
+          Dica: clique em <strong>+</strong> para comparar uma faixa acima, ou clique no número de aulas para carregar no simulador.
+        </p>
+      </div>
+    </section>
+
+        <!-- ABA 3: MELHOR CARGA HORÁRIA (OTIMIZADOR HORAS / SALÁRIO) -->
+    <section id="tab-otimizador" class="tab-panel hidden space-y-6">
+      <div class="bg-white rounded-2xl p-5 sm:p-6 shadow-sm border border-slate-200/80 space-y-5">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-slate-100 pb-4">
+          <div>
+            <h2 class="text-xl font-bold text-slate-900">Guia 3 — Qual a Melhor Quantidade de Aulas para o Seu Bolso?</h2>
+            <p class="text-sm sm:text-base text-slate-600 mt-1 leading-relaxed">
+              Compare o valor líquido médio de cada aula com o que realmente sobra quando você pega aulas extras em jornadas de 20h ou 40h.
+            </p>
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            <label for="selectFiltroRegime" class="text-sm font-semibold text-slate-700">Filtrar jornada:</label>
+            <select id="selectFiltroRegime"
+              class="rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm font-semibold text-slate-800 outline-none focus:border-teal-600">
+              <option value="todos">Todas as cargas (3 a 48 aulas)</option>
+              <option value="20h">Até 20h semanais (3 a 24 aulas)</option>
+              <option value="40h">De 20h a 40h (25 a 48 aulas)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Explicação Didática Sempre Visível -->
+        <div class="bg-teal-50/70 border border-teal-200 rounded-2xl p-4 sm:p-5 space-y-3 text-sm sm:text-base text-teal-950 leading-relaxed">
+          <h3 class="font-bold text-teal-950 text-base sm:text-lg">
+            Por que pegar mais aulas nem sempre aumenta o salário na mesma proporção?
+          </h3>
+          <p>
+            No Brasil e em Mato Grosso do Sul, os descontos sobem em <strong>degraus progressivos</strong>. Quando você aumenta sua carga horária, três mecanismos reduzem o ganho líquido de cada aula adicional:
+          </p>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-3 pt-1">
+            <div class="bg-white/90 rounded-xl p-3.5 border border-teal-200/80 text-sm text-slate-700">
+              <strong class="text-teal-900 block mb-1">1. Escada do INSS (7,5% → 14%)</strong>
+              Até R$ 1.621,00 o desconto é de 7,5%. Acima de R$ 4.354,28, cada real adicional sofre desconto de <strong>14%</strong> (`Bruto × 14% − R$ 198,49`).
+            </div>
+            <div class="bg-white/90 rounded-xl p-3.5 border border-teal-200/80 text-sm text-slate-700">
+              <strong class="text-teal-900 block mb-1">2. Fim da Isenção do IRRF (R$ 5.000)</strong>
+              Em 2026 (Lei nº 15.270/2025), salários até <strong>R$ 5.000,00 brutos</strong> pagam <strong>R$ 0,00 de IRRF</strong>. Entre R$ 5.000,01 e R$ 7.350,00, você paga o imposto da tabela e ainda perde <strong>R$ 0,133145 de desconto redutor</strong> a cada R$ 1,00 extra.
+            </div>
+            <div class="bg-white/90 rounded-xl p-3.5 border border-teal-200/80 text-sm text-slate-700">
+              <strong class="text-teal-900 block mb-1">3. Descontos Percentuais Fixos</strong>
+              Se você é optante da <strong>CASSEMS (6%)</strong> e filiado à <strong>FETEMS (2%)</strong>, mais 8% incidem diretamente sobre o aumento bruto.
+            </div>
+          </div>
+        </div>
+
+        <!-- Cards de Melhor Custo-Benefício -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="bg-emerald-50/80 rounded-2xl p-5 border border-emerald-200">
+            <div class="text-xs font-bold uppercase tracking-wider text-emerald-800">Melhor Ganho por Hora (Até 20h / 24a)</div>
+            <div id="opt20hAulas" class="text-2xl font-extrabold text-emerald-950 mt-1.5">24 aulas (20,0h)</div>
+            <div id="opt20hDetalhe" class="text-sm text-emerald-900 mt-1.5">Líquido: R$ 0,00 • R$ 0,00/aula</div>
+            <p class="text-xs text-emerald-800 mt-1">Totalmente isento de Imposto de Renda e na faixa intermediária do INSS.</p>
+          </div>
+
+          <div class="bg-teal-50/80 rounded-2xl p-5 border border-teal-200">
+            <div class="text-xs font-bold uppercase tracking-wider text-teal-800">Teto Sem Imposto de Renda (25 a 48a)</div>
+            <div id="opt40hAulas" class="text-2xl font-extrabold text-teal-950 mt-1.5">30 aulas (25,0h)</div>
+            <div id="opt40hDetalhe" class="text-sm text-teal-900 mt-1.5">Isento de IRRF até R$ 5.000,00 brutos</div>
+            <p class="text-xs text-teal-800 mt-1">Maior salário possível antes que o leão do IRRF comece a descontar na fonte.</p>
+          </div>
+
+          <div class="bg-amber-50/80 rounded-2xl p-5 border border-amber-200">
+            <div class="text-xs font-bold uppercase tracking-wider text-amber-800">Quanto Rende a Última Aula (48ª / 40h)</div>
+            <div id="optMarginal48" class="text-2xl font-extrabold text-amber-950 mt-1.5">+ R$ 0,00</div>
+            <div id="optMarginal48Sub" class="text-sm text-amber-900 mt-1.5">Ganho líquido real por aula adicional no topo</div>
+            <p class="text-xs text-amber-800 mt-1">Valor que efetivamente entra na sua conta ao passar de 47 para 48 aulas.</p>
+          </div>
+        </div>
+
+        <!-- Gráfico Adaptado para Celular -->
+        <div class="bg-slate-50 rounded-2xl p-4 sm:p-5 border border-slate-200/70 space-y-3">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+            <div>
+              <h3 class="text-base font-bold text-slate-900">Quanto Rende Cada Aula (Média vs. Aula Extra)</h3>
+              <p class="text-xs sm:text-sm text-slate-600 mt-0.5">
+                Compare o ganho médio (verde) com o que entra no bolso na aula extra (laranja).
+              </p>
+            </div>
+            <button type="button" id="btnToggleChartMode"
+              class="shrink-0 bg-white hover:bg-slate-100 text-teal-800 font-semibold text-xs sm:text-sm px-3.5 py-2 rounded-xl border border-slate-300 shadow-xs transition cursor-pointer">
+              Ver todas as 46 aulas
+            </button>
+          </div>
+          <div class="relative h-72 sm:h-72">
+            <canvas id="optimizerChart"></canvas>
+          </div>
+        </div>
+
+        <p class="sm:hidden text-xs font-medium text-slate-500">Deslize a tabela para o lado para ver todas as colunas →</p>
+        <div class="overflow-x-auto rounded-xl border border-slate-200">
+          <table class="min-w-full divide-y divide-slate-200 text-sm">
+            <thead class="bg-slate-100 text-slate-800 font-semibold">
+              <tr>
+                <th class="px-3.5 py-3 text-left">Aulas (CH)</th>
+                <th class="px-3.5 py-3 text-right">Bruto</th>
+                <th class="px-3.5 py-3 text-right">Descontos (R$ / %)</th>
+                <th class="px-3.5 py-3 text-right">Líquido</th>
+                <th class="px-3.5 py-3 text-right">Líquido / Aula</th>
+                <th class="px-3.5 py-3 text-right">Ganho da Aula Extra</th>
+                <th class="px-3.5 py-3 text-left">Situação Fiscal</th>
+              </tr>
+            </thead>
+            <tbody id="optTabelaCorpo" class="divide-y divide-slate-100 bg-white"></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABA 4: CUSTO DE VIDA, CESTA BÁSICA & ICMS (MS) -->
+    <section id="tab-podercompra" class="tab-panel hidden space-y-6">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+        <!-- Coluna Esquerda: Parâmetros + Composição da Cesta Básica (Sem espaço vazio) -->
+        <div class="lg:col-span-5 flex flex-col justify-between gap-6">
+          <div class="bg-white rounded-2xl p-5 sm:p-6 shadow-sm border border-slate-200/80 space-y-5">
+            <h2 class="text-xl font-bold text-slate-900 border-b border-slate-100 pb-3">
+              1. Simule Seus Gastos Mensais em MS
+            </h2>
+
+            <div>
+              <label for="inputCestaBasica" class="block text-sm font-semibold text-slate-800 mb-1.5">
+                Preço de 1 Cesta Básica Individual na sua cidade (R$)
+              </label>
+              <input id="inputCestaBasica" type="number" min="250" step="0.01" value="848.51"
+                class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base font-bold text-slate-900 focus:border-teal-600 outline-none" />
+              <div class="flex flex-wrap items-center gap-1.5 mt-2">
+                <span class="text-xs text-slate-500">Atalhos:</span>
+                <button type="button" id="btnPresetCG"
+                  class="text-xs font-semibold bg-teal-50 hover:bg-teal-100 text-teal-800 px-2.5 py-1 rounded-lg border border-teal-200 transition cursor-pointer">
+                  Campo Grande (DIEESE): R$ 848,51
+                </button>
+                <button type="button" id="btnPresetInterior"
+                  class="text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-1 rounded-lg border border-slate-200 transition cursor-pointer">
+                  Interior MS / Amambai (Est.): R$ 790,00
+                </button>
+              </div>
+              <p id="cestaAvisoMinimo" class="text-xs font-semibold text-amber-700 mt-1.5 hidden">
+                Valor digitado menor que R$ 250,00: usando R$ 848,51 temporariamente para evitar distorção na conta.
+              </p>
+            </div>
+
+            <div class="pt-3 border-t border-slate-100 space-y-3">
+              <h3 class="text-base font-bold text-slate-900">Despesas Tributadas pelo ICMS Estadual (17% → 19%)</h3>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div class="flex flex-col justify-end">
+                  <label for="inputGastoCombustivel" class="block text-sm font-semibold text-slate-700 mb-1">Combustível / Transporte (R$)</label>
+                  <input id="inputGastoCombustivel" type="number" min="0" step="10" value="450"
+                    class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base text-slate-800 outline-none focus:border-teal-600" />
+                </div>
+                <div class="flex flex-col justify-end">
+                  <label for="inputGastoEnergia" class="block text-sm font-semibold text-slate-700 mb-1">Energia Elétrica (R$)</label>
+                  <input id="inputGastoEnergia" type="number" min="0" step="10" value="280"
+                    class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base text-slate-800 outline-none focus:border-teal-600" />
+                </div>
+              </div>
+              <div>
+                <label for="inputGastoMercado" class="block text-sm font-semibold text-slate-700 mb-1">Supermercado / Alimentação da Casa (R$)</label>
+                <input id="inputGastoMercado" type="number" min="0" step="10" value="900"
+                  class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base text-slate-800 outline-none focus:border-teal-600" />
+              </div>
+            </div>
+
+            <div class="pt-3 border-t border-slate-100 space-y-2">
+              <h3 class="text-base font-bold text-slate-900">Desconto Invisível: Materiais de Trabalho</h3>
+              <div>
+                <label for="inputCustosInvisiveis" class="block text-sm font-medium text-slate-700 mb-1">
+                  Gastos do próprio bolso (internet, papel, canetas, impressões) em R$/mês
+                </label>
+                <input id="inputCustosInvisiveis" type="number" min="0" step="10" value="300"
+                  class="w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-base text-slate-800 outline-none focus:border-teal-600" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Card que preenche a coluna esquerda: Raio-X da Cesta Básica DIEESE em MS -->
+          <div class="bg-white rounded-2xl p-5 sm:p-6 shadow-sm border border-slate-200/80 space-y-3 flex-1 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between gap-2">
+                <h3 class="text-base font-bold text-slate-900">O que compõe a Cesta Básica em MS?</h3>
+                <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900">6ª a 8ª mais cara do Brasil</span>
+              </div>
+              <p class="text-sm text-slate-600 mt-1.5 leading-relaxed">
+                Segundo a <a href="https://acritica.net/economia/cesta-basica-campo-grande-outubro-2026-848-reais-tomate-arroz-dieese/" target="_blank" rel="noopener noreferrer" class="text-teal-700 font-semibold hover:underline">Pesquisa Nacional da Cesta Básica (DIEESE/Conab, out/2026)</a>, a cesta de <strong>R$ 848,51</strong> reúne 13 alimentos básicos para <strong>1 pessoa adulta</strong> durante 1 mês (carne bovina, leite, feijão, arroz, farinha, batata, tomate, pão francês, café, banana, açúcar, óleo e manteiga).
+              </p>
+            </div>
+            <div class="bg-slate-50 rounded-xl p-3.5 border border-slate-200/70 text-xs sm:text-sm text-slate-700 space-y-1.5">
+              <div><strong class="text-slate-900">Altas acumuladas em MS (12 meses):</strong> Batata (+69,4%), Feijão-carioca (+27,8%), Tomate (+12,3%) e Carne bovina (+6,1%).</div>
+              <div><strong class="text-slate-900">Regra Familiar do DIEESE:</strong> Para alimentar uma <strong>família padrão de 4 pessoas</strong> (2 adultos e 2 crianças), o DIEESE multiplica a cesta individual por <strong>3 cestas (<span id="pcCestaFamiliaVal">R$ 2.545,53</span>/mês)</strong>.</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Coluna Direita: Resultados com Memória de Cálculo Aberta -->
+        <div class="lg:col-span-7 flex flex-col justify-between gap-5">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 space-y-1.5">
+              <div class="text-xs font-bold uppercase tracking-wider text-slate-500">Poder de Compra (Cesta Individual vs. Familiar)</div>
+              <div id="pcQtdCestas" class="text-2xl sm:text-3xl font-extrabold text-teal-800">0,0 cestas</div>
+              <div id="pcPctCesta" class="text-sm font-medium text-slate-700">1 cesta individual consome 0% do líquido</div>
+              <div id="pcFamiliaCesta" class="text-xs text-slate-600 pt-1 border-t border-slate-100">
+                Família (3 cestas): consome 0% do seu líquido
+              </div>
+              <div id="pcFormulaCesta" class="text-[11px] font-mono text-slate-500 bg-slate-50 px-2 py-1 rounded">
+                Conta: Líquido ÷ Cesta
+              </div>
+            </div>
+
+            <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 space-y-1.5">
+              <div class="text-xs font-bold uppercase tracking-wider text-slate-500">Salário Mínimo Necessário (DIEESE)</div>
+              <div class="text-2xl sm:text-3xl font-extrabold text-slate-900">R$ 7.750,01</div>
+              <div id="pcDieeseDiff" class="text-sm text-rose-600 font-semibold">Defasagem em relação ao seu líquido</div>
+              <p class="text-xs text-slate-600 pt-1 border-t border-slate-100 leading-relaxed">
+                Valor calculado pelo <a href="https://www.campograndenews.com.br/economia/campo-grande-segura-alta-da-cesta-basica-mas-preco-ainda-pesa-no-bolso" target="_blank" rel="noopener noreferrer" class="text-teal-700 font-semibold hover:underline">DIEESE em 2026</a> para cobrir alimentação, moradia, saúde, educação, transporte e previdência de uma família de 4 pessoas.
+              </p>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-2xl p-5 sm:p-6 shadow-sm border border-slate-200/80 space-y-4">
+            <h3 class="text-lg font-bold text-slate-900">2. Quanto o ICMS e os Custos do Trabalho Retiram do Seu Líquido?</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-center">
+              <div class="bg-slate-50 rounded-xl p-3.5 border border-slate-200/70">
+                <div class="text-xs font-medium text-slate-600">ICMS Embutido (17%)</div>
+                <div id="pcIcms17" class="text-xl font-bold text-slate-900 mt-1">R$ 0,00</div>
+                <div id="pcIcms17Formula" class="text-[11px] text-slate-500 mt-0.5">17% sobre gastos</div>
+              </div>
+              <div class="bg-amber-50 rounded-xl p-3.5 border border-amber-200/70">
+                <div class="text-xs font-medium text-amber-900">Com Alta Proposta (19%)</div>
+                <div id="pcIcms19" class="text-xl font-bold text-amber-950 mt-1">R$ 0,00</div>
+                <div id="pcIcmsDiffAno" class="text-[11px] font-semibold text-amber-800 mt-0.5">+R$ 0,00/ano de imposto</div>
+              </div>
+              <div class="bg-emerald-50 rounded-xl p-3.5 border border-emerald-200/70">
+                <div class="text-xs font-medium text-emerald-900">Saldo Livre Após Gastos</div>
+                <div id="pcLiquidoRealPos" class="text-xl font-bold text-emerald-950 mt-1">R$ 0,00</div>
+                <div id="pcSaldoFormula" class="text-[11px] text-emerald-800 mt-0.5">Líquido − Gastos</div>
+              </div>
+            </div>
+
+            <div class="space-y-2 bg-slate-50 rounded-xl p-3.5 border border-slate-200/70">
+              <div class="flex flex-wrap items-center justify-between gap-2 text-xs sm:text-sm font-semibold text-slate-700">
+                <span>Total dos Gastos Informados (Combustível + Energia + Mercado + Trabalho)</span>
+                <span id="pcBarraPct" class="text-rose-700 font-bold">R$ 0,00 (0% do líquido)</span>
+              </div>
+              <div class="w-full h-3.5 bg-slate-200 rounded-full overflow-hidden">
+                <div id="pcBarraFill" class="h-full bg-gradient-to-r from-amber-500 to-rose-600 rounded-full transition-all duration-300" style="width: 0%"></div>
+              </div>
+            </div>
+
+            <div class="text-sm text-slate-700 space-y-2 leading-relaxed pt-1">
+              <p id="pcDeepHorasCesta"></p>
+              <p>
+                <strong class="text-slate-900">Por que o ICMS e a falta de estrutura escolar pesam tanto?</strong> Quando o Governo do Estado propõe <a href="https://folhams.com.br/2026/11/17/riedel-perda-arrecadacao-gas-boliviano-aumento-icms-ms/" target="_blank" rel="noopener noreferrer" class="text-teal-700 font-semibold hover:underline">elevar a alíquota modal do ICMS de 17% para 19%</a>, o custo de deslocamento entre escolas e a conta de luz sobem. Somado aos <strong>R$ 250 a R$ 600 mensais</strong> que muitos docentes tiram do próprio bolso para comprar papel, canetas de quadro e pagar internet para lançar diários, ocorre uma redução silenciosa do salário real.
+              </p>
+            </div>
+          </div>
+
+          <!-- Integração com Pautas Salariais da FETEMS -->
+          <div class="bg-teal-950 text-white rounded-2xl p-5 sm:p-6 shadow-sm space-y-3">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+              <span class="text-xs font-bold uppercase tracking-wider text-teal-300">Como a Pauta Sindical Responde a Essa Perda (FETEMS)</span>
+              <a href="https://fetems.org.br/" target="_blank" rel="noopener noreferrer"
+                class="text-xs font-semibold text-teal-200 hover:underline">fetems.org.br ↗</a>
+            </div>
+            <p id="fetemsPisoMsg" class="text-sm sm:text-base text-slate-100 leading-relaxed"></p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1 text-sm text-teal-50">
+              <div class="bg-white/10 rounded-xl p-3.5 border border-white/15">
+                <strong class="block text-amber-300 mb-1">Recomposição (RGA) &amp; Piso nos 79 Municípios</strong>
+                A FETEMS e os <strong>74 SIMTEDs</strong> cobram reposição integral da inflação (RGA) e o cumprimento do <strong>Piso Nacional (R$ 5.130,63)</strong> com reflexo na carreira para impedir que a inflação dos alimentos e o ICMS corroam o poder de compra.
+              </div>
+              <div class="bg-white/10 rounded-xl p-3.5 border border-white/15">
+                <strong class="block text-emerald-300 mb-1">Fim do Confisco de 14% dos Aposentados</strong>
+                Junto à CNTE, a federação atua pela revogação ou redução do desconto previdenciário de <strong>14% sobre aposentados</strong>, que retira renda justamente na fase de maior gasto com saúde e medicamentos.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABA 5: DIREITOS, CARREIRA & PAUTAS FETEMS -->
+    <section id="tab-direitos" class="tab-panel hidden space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 space-y-1">
+          <div class="text-xs font-bold uppercase tracking-wider text-slate-500">Reflexo Mensal de 13º + 1/3 de Férias</div>
+          <div id="dir13FeriasMes" class="text-2xl font-extrabold text-indigo-700">R$ 0,00/mês</div>
+          <div id="dir13FeriasAno" class="text-sm font-medium text-slate-700">Total anual: R$ 0,00</div>
+          <div id="dir13FeriasDetalhe" class="text-xs text-slate-500 pt-1 border-t border-slate-100">
+            13º (1/12): R$ 0,00 + 1/3 Férias (1/36): R$ 0,00
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 space-y-1">
+          <div class="text-xs font-bold uppercase tracking-wider text-slate-500">Seu IRRF Retido → Cofres de MS</div>
+          <div id="dirIrrfEstado" class="text-2xl font-extrabold text-teal-800">R$ 0,00/mês</div>
+          <div id="dirIrrfEstadoAno" class="text-sm font-medium text-slate-700">R$ 0,00/ano ficam no Tesouro de MS</div>
+          <div class="text-xs text-slate-500 pt-1 border-t border-slate-100">
+            100% é receita própria do Estado (Art. 157, I da CF/88)
+          </div>
+        </div>
+
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 space-y-1">
+          <div class="text-xs font-bold uppercase tracking-wider text-slate-500">Defasagem frente ao Efetivo Inicial</div>
+          <div id="dirGapEfetivo" class="text-2xl font-extrabold text-rose-600">- 0,0%</div>
+          <div id="dirGapEfetivoReais" class="text-sm font-medium text-slate-700">Diferença: - R$ 0,00/mês</div>
+          <div class="text-xs text-slate-500 pt-1 border-t border-slate-100">
+            Efetivo Inicial Licenciatura (40h): R$ 11.025,00
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        <div class="lg:col-span-6 bg-white rounded-2xl p-5 sm:p-6 shadow-sm border border-slate-200/80 flex flex-col justify-between gap-4">
+          <div>
+            <h3 class="text-lg font-bold text-slate-900 mb-1">Comparativo Salarial na Rede Estadual (Base 40h)</h3>
+            <p class="text-xs sm:text-sm text-slate-500 mb-3">
+              Veja a distância entre o Piso Nacional, a sua remuneração simulada e os vencimentos dos professores efetivos em MS.
+            </p>
+            <div class="relative h-64">
+              <canvas id="stfCompareChart"></canvas>
+            </div>
+          </div>
+          <div class="grid grid-cols-2 gap-3 pt-3 border-t border-slate-100">
+            <div class="bg-rose-50/80 rounded-xl p-3 border border-rose-200/70">
+              <div class="text-xs font-semibold text-rose-800">Distância p/ Média Efetivos</div>
+              <div id="dirGapMediaVal" class="text-base sm:text-lg font-extrabold text-rose-950 mt-0.5">- R$ 0,00</div>
+              <div class="text-[11px] text-rose-700">Média SED-MS (6.105 efetivos): R$ 12.928,34</div>
+            </div>
+            <div class="bg-indigo-50/80 rounded-xl p-3 border border-indigo-200/70">
+              <div class="text-xs font-semibold text-indigo-800">Média Convocados (MS)</div>
+              <div class="text-base sm:text-lg font-extrabold text-indigo-950 mt-0.5">R$ 4.904,04</div>
+              <div class="text-[11px] text-indigo-700">Painel GovInfo (13.783 convocados)</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-6 bg-white rounded-2xl p-5 sm:p-6 shadow-sm border border-slate-200/80 space-y-3.5">
+          <h3 class="text-lg font-bold text-slate-900">Seus Direitos Explicados Sem Complicação</h3>
+          <div class="space-y-3 text-sm sm:text-base text-slate-800 leading-relaxed">
+            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1">
+              <strong class="text-slate-900 block">1. Quanto você perde sem 13º e férias iguais aos do efetivo?</strong>
+              <p>A cada mês de trabalho, o 13º e o 1/3 de férias valem <strong>1/9 do seu salário bruto</strong>. Se o contrato temporário é renovado ano após ano sem concurso, a Justiça tem obrigado o Estado a pagar esses valores atrasados dos últimos 5 anos.</p>
+              <span class="block text-xs text-slate-500">Base legal: STF, Tema 551.</span>
+            </div>
+            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1">
+              <strong class="text-slate-900 block">2. Para onde vai o Imposto de Renda descontado no seu holerite?</strong>
+              <p>Ele <strong>não vai para Brasília</strong>. Todo o dinheiro descontado como Imposto de Renda dos professores estaduais fica <strong>100% no caixa do Governo de Mato Grosso do Sul</strong>.</p>
+              <span class="block text-xs text-slate-500">Base legal: Constituição Federal, Art. 157, I e STF (Temas 364 e 1130).</span>
+            </div>
+            <div class="p-4 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1">
+              <strong class="text-slate-900 block">3. Contrato temporário irregular dá direito a FGTS e Piso?</strong>
+              <p>Sim. Quando o Estado renova contratos temporários no lugar de fazer concurso, o professor pode cobrar <strong>8% de FGTS por mês trabalhado</strong> (<span id="dirFgtsMes" class="font-bold text-teal-800">R$ 0,00/mês</span> no seu caso). Além disso, nenhum temporário pode ganhar menos que o Piso Nacional proporcional.</p>
+              <span class="block text-xs text-slate-500">Base legal: STF, Temas 916 e 1.308.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Análise Aprofundada: Categorias, Previdência, Saúde e Pautas da FETEMS -->
+      <div class="bg-white rounded-2xl p-5 sm:p-6 shadow-sm border border-slate-200/80 space-y-5">
+        <div class="border-b border-slate-100 pb-3">
+          <span class="text-xs font-bold uppercase tracking-wider text-teal-700">Diagnóstico Estrutural da Carreira em MS</span>
+          <h3 class="text-lg sm:text-xl font-bold text-slate-900 mt-0.5">
+            Desigualdades entre Categorias, Condições de Trabalho e as Pautas da FETEMS
+          </h3>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm sm:text-base text-slate-700 leading-relaxed">
+          <div class="p-4 rounded-xl bg-amber-50/70 border border-amber-200/80 space-y-2">
+            <strong class="text-amber-950 block text-base">1. Trabalho Igual, Salário Desigual e Congelamento de Titulação</strong>
+            <p id="fetemsTitulacaoMsg"></p>
+            <p class="text-sm text-amber-950">
+              <strong>Como a FETEMS atua:</strong> cobra na comissão organizadora a realização do <strong>Concurso Público da SED-MS (2.000 vagas</strong> autorizadas pelo Decreto nº 16.787/2026, cujo <a href="https://blog.grancursosonline.com.br/concurso-sed-ms/" target="_blank" rel="noopener noreferrer" class="underline font-semibold">edital previsto para novembro/2026 foi adiado por atraso na contratação da banca</a>), negocia política salarial para reduzir a disparidade dos convocados e exige a implantação em folha das promoções e progressões com pagamento dos retroativos.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-indigo-50/70 border border-indigo-200/80 space-y-2">
+            <strong class="text-indigo-950 block text-base">2. Sobrecarga em Sala (Rede Estadual vs. Institutos Federais)</strong>
+            <p>
+              Pela Lei do Piso (Tema 958/STF), o professor estadual passa até <strong>66,7% da jornada em sala</strong> (32 aulas em 40h) e tem apenas 1/3 para planejar. Já na carreira EBTT dos <strong>Institutos Federais (Lei nº 12.772/2012)</strong>, a regência ocupa de <strong>20% a 40% da jornada</strong> (8h a 16h), reservando 60% a 80% para planejamento, atendimento, pesquisa e extensão.
+            </p>
+            <p class="text-sm text-indigo-950">
+              <strong>Impacto na saúde e pauta sindical:</strong> estudos da <a href="https://www.fcc.org.br/fcc-noticia/saude-mental-de-professores-por-que-o-adoecimento-vai-alem-individuo/" target="_blank" rel="noopener noreferrer" class="underline font-semibold">Fundação Carlos Chagas (2026)</a> e da <a href="https://cnte.org.br/noticias/pressao-assedio-e-falta-de-valorizacao-a-realidade-que-adoece-quem-educa-dd0a" target="_blank" rel="noopener noreferrer" class="underline font-semibold">CNTE</a> mostram que a sobrecarga leva trabalho para as noites e férias, gerando <em>burnout</em> e perda vocal. A FETEMS defende o respeito rigoroso ao 1/3 de PL e melhores condições nas escolas de tempo integral.
+            </p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2 md:col-span-2">
+            <strong class="text-slate-900 block text-base">3. Por que a aposentadoria do convocado é menor que a do efetivo?</strong>
+            <p class="text-sm sm:text-base text-slate-800 leading-relaxed">
+              O convocado paga até <strong>14% de INSS</strong> todo mês, mas entra nas regras comuns da aposentadoria (limitada ao teto do INSS), e não na previdência própria da carreira do Estado. Como o contrato acaba no fim do ano letivo e fica parado nas férias, esses <strong>meses sem contribuição</strong> puxam para baixo o valor da sua futura aposentadoria.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABA 6: COMO CALCULAMOS (FÓRMULAS, REGRAS E FONTES 2026) -->
+    <section id="tab-regras" class="tab-panel hidden space-y-6">
+      <!-- Novo Guia Completo de Fórmulas da Calculadora -->
+      <div class="bg-white rounded-2xl p-5 sm:p-6 shadow-sm border border-slate-200/80 space-y-4">
+        <div class="border-b border-slate-100 pb-3">
+          <h2 class="text-xl font-bold text-slate-900">Guia 6 — Como Todos os Cálculos Desta Calculadora São Feitos</h2>
+          <p class="text-sm sm:text-base text-slate-600 mt-1">
+            Transparência total: confira abaixo cada fórmula matemática aplicada no simulador para você mesmo conferir com a calculadora na mão ou auditar seu holerite.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3.5 text-sm text-slate-800">
+          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1.5">
+            <strong class="text-slate-900 block">1. Horas no Holerite (Cód. 1108)</strong>
+            <div class="font-mono text-xs bg-white px-2.5 py-1.5 rounded-lg border border-slate-200 text-teal-900">(Aulas ÷ 48) × 180</div>
+            <p class="text-slate-600 leading-relaxed">Converte suas aulas semanais para a base de 180 horas mensais do holerite (ex.: 34,5 aulas = 129,38h).</p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1.5">
+            <strong class="text-slate-900 block">2. Salário Base Proporcional</strong>
+            <div class="font-mono text-xs bg-white px-2.5 py-1.5 rounded-lg border border-slate-200 text-teal-900">Base 40h × (Aulas ÷ 48)</div>
+            <p class="text-slate-600 leading-relaxed">Calcula o pagamento proporcional à sua carga horária conforme o Decreto nº 16.754/2026.</p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1.5">
+            <strong class="text-slate-900 block">3. Incentivo Noturno 10% (Cód. 49)</strong>
+            <div class="font-mono text-xs bg-white px-2.5 py-1.5 rounded-lg border border-slate-200 text-teal-900">(Base 40h ÷ 180) × Horas Noturnas × 10%</div>
+            <p class="text-slate-600 leading-relaxed">Soma 10% por hora trabalhada após as 18h usando a base mensal de 180h (LC 087/2000).</p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1.5">
+            <strong class="text-slate-900 block">4. INSS Progressivo 2026 (Cód. 626)</strong>
+            <div class="font-mono text-xs bg-white px-2.5 py-1.5 rounded-lg border border-slate-200 text-teal-900">(Bruto × Faixa) − Parcela a Deduzir</div>
+            <p class="text-slate-600 leading-relaxed">Aplica de 7,5% a 14% por faixa salarial, com desconto máximo (teto) de R$ 988,09 em 2026.</p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1.5">
+            <strong class="text-slate-900 block">5. Imposto de Renda 2026 (Lei 15.270)</strong>
+            <div class="font-mono text-xs bg-white px-2.5 py-1.5 rounded-lg border border-slate-200 text-teal-900">IR Final = IR Tabela − (978,62 − 0,133145 × Bruto)</div>
+            <p class="text-slate-600 leading-relaxed">Isenção total até R$ 5.000,00 brutos e desconto gradual até R$ 7.350,00, usando sempre a maior dedução (legal ou R$ 607,20).</p>
+          </div>
+
+          <div class="p-4 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1.5">
+            <strong class="text-slate-900 block">6. CASSEMS, FETEMS, Cestas e 13º/Férias</strong>
+            <div class="font-mono text-xs bg-white px-2.5 py-1.5 rounded-lg border border-slate-200 text-teal-900">CASSEMS = 6% + 35/benef. | FETEMS = 2% Base</div>
+            <p class="text-slate-600 leading-relaxed">Cestas = Líquido ÷ Preço da Cesta. Valor mensalizado de 13º + 1/3 de férias = Bruto ÷ 9.</p>
+          </div>        </div>
+      </div>
+
+      <!-- Cards das Fontes Oficiais -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 space-y-2">
+          <h3 class="text-base font-bold text-slate-900">1. Remuneração Base (Decreto MS nº 16.754/2026)</h3>
+          <p class="text-sm text-slate-600 leading-relaxed">
+            Vigência a partir de 1º de abril de 2026 para docentes temporários (40h semanais = 48 aulas de lotação). Convocações com carga inferior recebem proporcionalmente ao número de aulas.
+          </p>
+          <ul class="text-xs sm:text-sm text-slate-600 space-y-1 list-disc pl-4">
+            <li><strong>Tabela A</strong> (Escolas, CEI-ZEDU e Centros Estaduais): R$ 5.674,00 (Normal Médio; R$ 5.674,21 na tabela FETEMS), R$ 6.981,00 (Graduação s/ Licenciatura) e R$ 7.799,00 (Licenciatura / Pós).</li>
+            <li><strong>Tabela B</strong> (Demais órgãos SED, Treinamento Esportivo, Arte/Cultura): R$ 5.568,00, R$ 6.851,00 e R$ 7.652,00.</li>
+          </ul>
+        </div>
+
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 space-y-2">
+          <h3 class="text-base font-bold text-slate-900">2. INSS 2026 (Portaria MPS/MF nº 13/2026)</h3>
+          <p class="text-sm text-slate-600 leading-relaxed">
+            O cálculo é progressivo por faixas salariais, com teto previdenciário de R$ 8.475,55 (desconto máximo de R$ 988,09).
+          </p>
+          <ul class="text-xs sm:text-sm text-slate-600 space-y-1 list-disc pl-4">
+            <li>Até R$ 1.621,00: 7,5%</li>
+            <li>De R$ 1.621,01 a R$ 2.902,84: 9,0% (deduz R$ 24,32)</li>
+            <li>De R$ 2.902,85 a R$ 4.354,27: 12,0% (deduz R$ 111,40)</li>
+            <li>De R$ 4.354,28 a R$ 8.475,55: 14,0% (deduz R$ 198,49)</li>
+          </ul>
+          <a href="https://rankia.com.br/tabela-inss-2026-aliquotas-calculo-completo/" target="_blank" rel="noopener noreferrer"
+            class="inline-block text-xs sm:text-sm font-semibold text-teal-700 hover:underline mt-1">
+            Consultar tabela oficial INSS 2026 ↗
+          </a>
+        </div>
+
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 space-y-2">
+          <h3 class="text-base font-bold text-slate-900">3. IRRF 2026 (Lei nº 15.270/2025)</h3>
+          <p class="text-sm text-slate-600 leading-relaxed">
+            Desde janeiro de 2026, rendimentos tributáveis mensais até <strong>R$ 5.000,00</strong> têm redução que zera o imposto. Entre <strong>R$ 5.000,01 e R$ 7.350,00</strong>, aplica-se a redução gradual: <code>R$ 978,62 − (0,133145 × Bruto)</code>.
+          </p>
+          <a href="https://www.gov.br/receitafederal/pt-br/assuntos/meu-imposto-de-renda/tabelas/2026" target="_blank" rel="noopener noreferrer"
+            class="inline-block text-xs sm:text-sm font-semibold text-teal-700 hover:underline mt-1">
+            Tabelas de Tributação 2026 — Receita Federal ↗
+          </a>
+        </div>
+
+        <div class="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/80 space-y-2">
+          <h3 class="text-base font-bold text-slate-900">4. CASSEMS e Incentivo Noturno (LC 087/2000)</h3>
+          <p class="text-sm text-slate-600 leading-relaxed">
+            A contribuição titular da <strong>CASSEMS</strong> é de <strong>6% sobre o bruto</strong> + <strong>R$ 35,00 por beneficiário</strong> (teto R$ 140,00). O <strong>Incentivo Noturno (10%)</strong> incide sobre as horas trabalhadas após as 18h na base mensal de 180 horas.
+          </p>
+          <div class="flex flex-wrap gap-4 mt-1">
+            <a href="https://www.cassems.com.br/sobre" target="_blank" rel="noopener noreferrer"
+              class="text-xs sm:text-sm font-semibold text-teal-700 hover:underline">
+              Portal CASSEMS ↗
+            </a>
+            <a href="https://aacpdappls.net.ms.gov.br/appls/legislacao/secoge/govato.nsf/66ecc3cfb53d53ff04256b140049444b/cc3aad25c09897f804256c0000561af3" target="_blank" rel="noopener noreferrer"
+              class="text-xs sm:text-sm font-semibold text-teal-700 hover:underline">
+              Estatuto LC 087/2000 ↗
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="mt-8 pt-6 border-t border-slate-200/80 text-center space-y-3">
+      <div class="inline-block bg-white rounded-2xl px-5 py-4 border border-slate-200/80 shadow-xs text-left sm:text-center">
+        <div class="text-sm font-bold text-slate-900">Criado por Luiz Martins</div>
+        <ul class="text-xs sm:text-sm text-slate-600 mt-1 space-y-0.5">
+          <li>• Professor de Física da rede estadual de MS.</li>
+          <li>• Mestrando no PPGECMat (UFGD).</li>
+        </ul>
+      </div>
+      <p class="text-xs text-slate-400">
+        Simulação informativa baseada nas tabelas vigentes em 2026. Valores podem sofrer variações pontuais em folha conforme adicionais ou consignações individuais.
+      </p>
+    </footer>
+  </div>
+  </div>
+
+  <script>
+    (function () {
+      const BASES_40H = {
+        A: {
+          licenciatura: 7799.00,
+          sem_licenciatura: 6981.00,
+          normal_medio: 5674.00
+        },
+        B: {
+          licenciatura: 7652.00,
+          sem_licenciatura: 6851.00,
+          normal_medio: 5568.00
+        }
+      };
+
+      const NOTAS_FORMACAO = {
+        A: {
+          licenciatura: "Base 40h (Decreto 16.754/2026): R$ 7.799,00",
+          sem_licenciatura: "Base 40h (Decreto 16.754/2026): R$ 6.981,00",
+          normal_medio: "Base 40h (Decreto 16.754/2026): R$ 5.674,00 (FETEMS: R$ 5.674,21)"
+        },
+        B: {
+          licenciatura: "Base 40h (Decreto 16.754/2026): R$ 7.652,00",
+          sem_licenciatura: "Base 40h (Decreto 16.754/2026): R$ 6.851,00",
+          normal_medio: "Base 40h (Decreto 16.754/2026): R$ 5.568,00"
+        }
+      };
+
+      const state = {
+        mode: "tabela", // "tabela" | "custom"
+        tabela: "A",
+        formacao: "licenciatura",
+        aulas: 48,
+        customBruto: 7799.00,
+        noturnoAtivo: false,
+        horasNoturno: 0,
+        fetemsAtivo: false,
+        dependentes: 0,
+        cassemsAtivo: true,
+        cassemsBenef: 1,
+        pensao: 0,
+        outrosDescontos: 0,
+        filtroTabela: "",
+        chartResumoMode: true,
+        compareList: [24, 30, 36, 48]
+      };
+
+      function formatNum(v) {
+        return Number(v.toFixed(2)).toLocaleString("pt-BR", { minimumFractionDigits: 0, maximumFractionDigits: 2 });
+      }
+
+      let chartInstance = null;
+      let optimizerChartInstance = null;
+      let stfCompareChartInstance = null;
+
+      function formatBRL(v) {
+        return v.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+      }
+
+      function calcularINSS2026(bruto) {
+        if (bruto <= 0) return { valor: 0, faixa: "Isento" };
+        if (bruto <= 1621.00) return { valor: bruto * 0.075, faixa: "Faixa 1 (7,5%)" };
+        if (bruto <= 2902.84) return { valor: bruto * 0.09 - 24.32, faixa: "Faixa 2 (9,0%)" };
+        if (bruto <= 4354.27) return { valor: bruto * 0.12 - 111.40, faixa: "Faixa 3 (12,0%)" };
+        if (bruto <= 8475.55) return { valor: bruto * 0.14 - 198.49, faixa: "Faixa 4 (14,0%)" };
+        return { valor: 988.09, faixa: "Teto INSS 2026" };
+      }
+
+      function calcularIRRF2026(bruto, inss, dependentes, pensao) {
+        if (bruto <= 0) {
+          return { valor: 0, base: 0, deducaoUsada: 0, tipoDeducao: "N/A", irTabela: 0, reducao: 0, status: "Isento" };
+        }
+        const deducaoLegal = inss + dependentes * 189.59 + pensao;
+        const descontoSimplificado = 607.20;
+        const usarSimplificado = descontoSimplificado > deducaoLegal;
+        const deducaoUsada = Math.max(deducaoLegal, descontoSimplificado);
+        const base = Math.max(0, bruto - deducaoUsada);
+
+        let irTabela = 0;
+        if (base <= 2428.80) irTabela = 0;
+        else if (base <= 2826.65) irTabela = base * 0.075 - 182.16;
+        else if (base <= 3751.05) irTabela = base * 0.15 - 394.16;
+        else if (base <= 4664.68) irTabela = base * 0.225 - 675.49;
+        else irTabela = base * 0.275 - 908.73;
+
+        irTabela = Math.max(0, irTabela);
+
+        let reducao = 0;
+        let valorFinal = irTabela;
+        let status = "Tabela normal";
+
+        if (bruto <= 5000.00) {
+          reducao = irTabela;
+          valorFinal = 0;
+          status = "Isento (Lei 15.270/2025)";
+        } else if (bruto <= 7350.00) {
+          reducao = Math.max(0, 978.62 - 0.133145 * bruto);
+          valorFinal = Math.max(0, irTabela - reducao);
+          status = "Redução parcial (Lei 15.270/2025)";
+        }
+
+        return {
+          valor: valorFinal,
+          base,
+          deducaoUsada,
+          tipoDeducao: usarSimplificado ? "Desconto Simplificado (R$ 607,20)" : "Deduções Legais (INSS + Dep./Pensão)",
+          irTabela,
+          reducao,
+          status
+        };
+      }
+
+      function calcularCASSEMS(bruto, ativo, benef) {
+        if (!ativo || bruto <= 0) return 0;
+        const fixa = Math.min(4, Math.max(1, benef)) * 35.00;
+        return bruto * 0.06 + fixa;
+      }
+
+      function calcularTudo(bruto, vencimentoBase) {
+        const inssObj = calcularINSS2026(bruto);
+        const irrfObj = calcularIRRF2026(bruto, inssObj.valor, state.dependentes, state.pensao);
+        const cassems = calcularCASSEMS(bruto, state.cassemsAtivo, state.cassemsBenef);
+        const cassemsSimulado = calcularCASSEMS(bruto, true, state.cassemsBenef);
+        const fetems = state.fetemsAtivo ? (vencimentoBase * 0.02) : 0;
+
+        const descontosSemCassems = inssObj.valor + irrfObj.valor + fetems + state.pensao + state.outrosDescontos;
+        const descontosComCassems = descontosSemCassems + cassemsSimulado;
+        const totalDescontos = state.cassemsAtivo ? descontosComCassems : descontosSemCassems;
+
+        const liquidoSemCassems = Math.max(0, bruto - descontosSemCassems);
+        const liquidoComCassems = Math.max(0, bruto - descontosComCassems);
+        const liquidoAtual = state.cassemsAtivo ? liquidoComCassems : liquidoSemCassems;
+
+        return {
+          bruto,
+          inss: inssObj,
+          irrf: irrfObj,
+          fetems,
+          cassems,
+          cassemsSimulado,
+          totalDescontos,
+          liquidoSemCassems,
+          liquidoComCassems,
+          liquidoAtual
+        };
+      }
+
+      function getBrutoDetalhado() {
+        const base40 = BASES_40H[state.tabela][state.formacao];
+        const vencimentoBase = state.mode === "custom"
+          ? Math.max(0, state.customBruto)
+          : base40 * (state.aulas / 48);
+        let incentivoNoturno = 0;
+        let horasNot = 0;
+        if (state.noturnoAtivo && state.horasNoturno > 0) {
+          horasNot = Math.min(180, Math.max(0, state.horasNoturno));
+          // Regra SAD-MS (Cód. 49): horas noturnas mensais × (Salário Base 40h / 180) × 10%
+          const horaBase180 = (state.mode === "custom" ? vencimentoBase : base40) / 180;
+          incentivoNoturno = horaBase180 * horasNot * 0.10;
+        }
+        return {
+          vencimentoBase,
+          incentivoNoturno,
+          horasNot,
+          brutoTotal: vencimentoBase + incentivoNoturno
+        };
+      }
+
+      function renderChart(res) {
+        const ctx = document.getElementById("salaryChart");
+        if (!ctx || typeof Chart === "undefined") return;
+
+        const labels = ["Salário Líquido", "INSS", "IRRF 2026"];
+        const data = [res.liquidoAtual, res.inss.valor, res.irrf.valor];
+        const colors = ["#059669", "#f59e0b", "#ef4444"];
+
+        if (state.cassemsAtivo && res.cassems > 0) {
+          labels.push("CASSEMS");
+          data.push(res.cassems);
+          colors.push("#0ea5e9");
+        }
+        if (res.fetems > 0) {
+          labels.push("FETEMS (2%)");
+          data.push(res.fetems);
+          colors.push("#d97706");
+        }
+        const extras = state.pensao + state.outrosDescontos;
+        if (extras > 0) {
+          labels.push("Pensão/Outros");
+          data.push(extras);
+          colors.push("#8b5cf6");
+        }
+
+        if (chartInstance) {
+          chartInstance.data.labels = labels;
+          chartInstance.data.datasets[0].data = data;
+          chartInstance.data.datasets[0].backgroundColor = colors;
+          chartInstance.update();
+          return;
+        }
+
+        chartInstance = new Chart(ctx, {
+          type: "doughnut",
+          data: {
+            labels,
+            datasets: [{
+              data,
+              backgroundColor: colors,
+              borderWidth: 2,
+              borderColor: "#ffffff"
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            cutout: "62%",
+            plugins: {
+              legend: {
+                position: "bottom",
+                labels: { boxWidth: 12, font: { size: 11, family: "Inter" } }
+              },
+              tooltip: {
+                callbacks: {
+                  label: (context) => `${context.label}: ${formatBRL(context.raw)}`
+                }
+              }
+            }
+          }
+        });
+      }
+
+      function renderTabelaCompleta() {
+        const tbody = document.getElementById("tabelaCorpo");
+        const base40 = BASES_40H[state.tabela][state.formacao];
+        const formacaoLabel = document.getElementById("selectFormacao").selectedOptions[0].text;
+        document.getElementById("tabelaSubtitulo").textContent =
+          `Tabela ${state.tabela} • ${formacaoLabel} • Base 40h: ${formatBRL(base40)}`;
+
+        const filtro = state.filtroTabela.trim();
+        let html = "";
+
+        for (let aulas = 3; aulas <= 48; aulas++) {
+          if (filtro && !String(aulas).includes(filtro)) continue;
+          const chRelativa = ((aulas / 48) * 40).toFixed(1).replace(".", ",");
+          const sala = Math.round((aulas * 2) / 3);
+          const ha = aulas - sala;
+          const bruto = base40 * (aulas / 48);
+          const inss = calcularINSS2026(bruto).valor;
+          const irrf = calcularIRRF2026(bruto, inss, state.dependentes, state.pensao).valor;
+          const cassems = calcularCASSEMS(bruto, true, state.cassemsBenef);
+          const liqSem = Math.max(0, bruto - inss - irrf - state.pensao - state.outrosDescontos);
+          const liqCom = Math.max(0, liqSem - cassems);
+          const isSelected = state.mode === "tabela" && state.aulas === aulas;
+
+          const inComp = state.compareList.includes(aulas);
+          html += `
+            <tr data-aulas="${aulas}" class="cursor-pointer transition ${isSelected ? "bg-teal-50 font-semibold" : "hover:bg-slate-50"}">
+              <td class="px-3 py-2.5 whitespace-nowrap sticky left-0 z-10 font-bold ${isSelected ? 'bg-teal-50 text-teal-900' : 'bg-white text-slate-900'}">${aulas} aulas</td>
+              <td class="px-3 py-2.5 text-center whitespace-nowrap">
+                <button type="button" data-comp-toggle="${aulas}"
+                  class="px-2.5 py-1 rounded-lg text-xs font-bold border transition cursor-pointer ${inComp ? 'bg-teal-700 text-white border-teal-700' : 'bg-white text-teal-800 border-teal-300 hover:bg-teal-50'}">
+                  ${inComp ? '✓ Na lista' : '+ Comparar'}
+                </button>
+              </td>
+              <td class="px-3 py-2.5 whitespace-nowrap text-slate-600">${chRelativa}h</td>
+              <td class="px-3 py-2.5 whitespace-nowrap text-slate-600">${sala} + ${ha}</td>
+              <td class="px-3 py-2.5 text-right whitespace-nowrap">${formatBRL(bruto)}</td>
+              <td class="px-3 py-2.5 text-right whitespace-nowrap text-rose-600">${formatBRL(inss)}</td>
+              <td class="px-3 py-2.5 text-right whitespace-nowrap text-rose-600">${irrf > 0 ? formatBRL(irrf) : "—"}</td>
+              <td class="px-3 py-2.5 text-right whitespace-nowrap text-sky-700">${formatBRL(cassems)}</td>
+              <td class="px-3 py-2.5 text-right whitespace-nowrap font-bold text-emerald-700">${formatBRL(liqSem)}</td>
+              <td class="px-3 py-2.5 text-right whitespace-nowrap font-bold text-teal-800">${formatBRL(liqCom)}</td>
+            </tr>
+          `;
+        }
+
+        tbody.innerHTML = html || `<tr><td colspan="10" class="px-4 py-6 text-center text-slate-500">Nenhuma carga horária encontrada para "${filtro}".</td></tr>`;
+        renderComparador();
+      }
+
+      function renderComparador() {
+        const container = document.getElementById("compCardsContainer");
+        if (!container) return;
+
+        if (state.compareList.length === 0) {
+          container.innerHTML = `
+            <div class="col-span-full bg-slate-50 border border-dashed border-slate-300 rounded-xl p-5 text-center text-sm text-slate-500">
+              Nenhuma faixa selecionada. Digite uma carga horária acima, clique em <strong>+ Comparar</strong> na tabela ou use o botão <strong>★ Preencher com maiores custo-benefício</strong> abaixo.
+            </div>
+          `;
+          return;
+        }
+
+        const base40 = BASES_40H[state.tabela][state.formacao];
+        const sorted = [...state.compareList].sort((a, b) => a - b);
+
+        // Calcula os valores para todas as cargas selecionadas
+        const items = sorted.map((aulas) => {
+          const bruto = base40 * (aulas / 48);
+          const inss = calcularINSS2026(bruto).valor;
+          const irrf = calcularIRRF2026(bruto, inss, state.dependentes, state.pensao).valor;
+          const cassems = calcularCASSEMS(bruto, state.cassemsAtivo, state.cassemsBenef);
+          const fetems = state.fetemsAtivo ? (bruto * 0.02) : 0;
+          const desc = inss + irrf + cassems + fetems + state.pensao + state.outrosDescontos;
+          const liq = Math.max(0, bruto - desc);
+          return {
+            aulas,
+            ch: ((aulas / 48) * 40).toFixed(1).replace(".", ","),
+            bruto,
+            inss,
+            irrf,
+            cassems,
+            desc,
+            liq,
+            liqPorAula: liq / aulas
+          };
+        });
+
+        const refLiq = items[0].liq;
+        const maxLiqAula = Math.max(...items.map((x) => x.liqPorAula));
+
+        container.innerHTML = items.map((item, idx) => {
+          const diff = item.liq - refLiq;
+          const isBestRate = items.length > 1 && Math.abs(item.liqPorAula - maxLiqAula) < 0.01;
+          return `
+            <div class="rounded-xl p-3.5 border ${isBestRate ? 'bg-emerald-50/70 border-emerald-300' : 'bg-slate-50 border-slate-200'} flex flex-col justify-between gap-2.5">
+              <div class="flex items-start justify-between gap-2">
+                <div>
+                  <div class="text-sm font-extrabold text-slate-900">${item.aulas} aulas <span class="font-medium text-slate-500">(${item.ch}h)</span></div>
+                  ${isBestRate ? '<span class="inline-block text-[10px] font-bold uppercase tracking-wider bg-emerald-200/80 text-emerald-900 px-2 py-0.5 rounded-full mt-0.5">Melhor R$/aula</span>' : ''}
+                </div>
+                <button type="button" data-comp-remove="${item.aulas}" title="Remover da comparação"
+                  class="w-6 h-6 rounded-lg bg-white hover:bg-rose-100 text-slate-500 hover:text-rose-700 font-bold text-xs border border-slate-200 flex items-center justify-center cursor-pointer">
+                  ×
+                </button>
+              </div>
+
+              <div class="space-y-1 text-xs text-slate-700 border-t border-slate-200/70 pt-2">
+                <div class="flex justify-between"><span>Bruto:</span><strong class="text-slate-900">${formatBRL(item.bruto)}</strong></div>
+                <div class="flex justify-between"><span>INSS / IRRF:</span><span class="text-rose-600">-${formatBRL(item.inss + item.irrf)}</span></div>
+                ${state.cassemsAtivo ? `<div class="flex justify-between"><span>CASSEMS:</span><span class="text-sky-700">-${formatBRL(item.cassems)}</span></div>` : ''}
+                <div class="flex justify-between pt-1 border-t border-slate-200/70 text-sm">
+                  <span class="font-semibold text-slate-800">Líquido:</span>
+                  <strong class="text-emerald-800">${formatBRL(item.liq)}</strong>
+                </div>
+                <div class="flex justify-between text-[11px]">
+                  <span class="text-slate-500">Líquido / aula:</span>
+                  <strong class="text-teal-800">${formatBRL(item.liqPorAula)}</strong>
+                </div>
+              </div>
+
+              <div class="text-[11px] font-semibold px-2 py-1 rounded-lg text-center ${idx === 0 ? 'bg-slate-200/70 text-slate-700' : 'bg-teal-100/80 text-teal-900'}">
+                ${idx === 0 ? 'Base de comparação' : `+ ${formatBRL(diff)} vs. ${items[0].aulas}a`}
+              </div>
+            </div>
+          `;
+        }).join("");
+      }
+
+      function render() {
+        // Notas e carga horária (suporta valores fracionários, ex: 33,5 -> 22,5 sala + 11 HA)
+        document.getElementById("formacaoNota").textContent = NOTAS_FORMACAO[state.tabela][state.formacao];
+        const chRel = ((state.aulas / 48) * 40).toFixed(1).replace(".", ",");
+        const sala = Math.round(((state.aulas * 2) / 3) * 2) / 2;
+        const ha = Math.round((state.aulas - sala) * 100) / 100;
+
+        const horasMes = ((state.aulas / 48) * 180).toFixed(2).replace(".", ",");
+        document.getElementById("infoHorasRelativas").textContent = `${chRel} h`;
+        document.getElementById("infoHorasMes").textContent = `${horasMes} h`;
+        document.getElementById("infoAulasSala").textContent = `${formatNum(sala)} aulas`;
+        document.getElementById("infoHoraAtividade").textContent = `${formatNum(ha)} ${ha === 1 ? "aula" : "aulas"}`;
+
+        const brutoDet = getBrutoDetalhado();
+        const bruto = brutoDet.brutoTotal;
+        const res = calcularTudo(bruto, brutoDet.vencimentoBase);
+        const pctDesc = bruto > 0 ? ((res.totalDescontos / bruto) * 100).toFixed(1).replace(".", ",") : "0,0";
+
+        document.getElementById("resBruto").textContent = formatBRL(res.bruto);
+        const baseDescText = state.mode === "tabela"
+          ? `${formatNum(state.aulas)} aulas (${chRel}h) • Tabela ${state.tabela}`
+          : "Valor bruto personalizado";
+        document.getElementById("resBrutoSub").textContent = brutoDet.incentivoNoturno > 0
+          ? `Base: ${formatBRL(brutoDet.vencimentoBase)} + Noturno (${formatNum(brutoDet.horasNot)}h): ${formatBRL(brutoDet.incentivoNoturno)}`
+          : baseDescText;
+
+        document.getElementById("resTotalDescontos").textContent = `- ${formatBRL(res.totalDescontos)}`;
+        document.getElementById("resDescontosPct").textContent = `${pctDesc}% do salário bruto`;
+
+        document.getElementById("resLiquidoPrincipal").textContent = formatBRL(res.liquidoAtual);
+        document.getElementById("resLiquidoTag").textContent = state.cassemsAtivo
+          ? "Com desconto da CASSEMS incluído"
+          : "Sem desconto da CASSEMS";
+
+        document.getElementById("resComparativoLabel").textContent = state.cassemsAtivo
+          ? "Sem CASSEMS seria:"
+          : "Com CASSEMS seria:";
+        document.getElementById("resComparativoValor").textContent = formatBRL(
+          state.cassemsAtivo ? res.liquidoSemCassems : res.liquidoComCassems
+        );
+        const aulasCalc = state.mode === "tabela" ? Math.max(1, state.aulas) : 48;
+        document.getElementById("simLiqPorAula").textContent = formatBRL(res.liquidoAtual / aulasCalc);
+        const retPct = bruto > 0 ? ((res.liquidoAtual / bruto) * 100).toFixed(1).replace(".", ",") : "0,0";
+        document.getElementById("simRetencaoPct").textContent = `${retPct}%`;
+
+        // Detalhamento
+        document.getElementById("detInssVal").textContent = `- ${formatBRL(res.inss.valor)}`;
+        document.getElementById("detInssInfo").textContent = res.inss.faixa;
+
+        document.getElementById("detIrpfVal").textContent = res.irrf.valor > 0 ? `- ${formatBRL(res.irrf.valor)}` : "R$ 0,00";
+        document.getElementById("detIrpfInfo").textContent = res.irrf.status;
+        const badgeIrpf = document.getElementById("badgeIrpf");
+        if (res.irrf.valor === 0 && bruto > 0) badgeIrpf.classList.remove("hidden");
+        else badgeIrpf.classList.add("hidden");
+
+        document.getElementById("detCassemsVal").textContent = state.cassemsAtivo ? `- ${formatBRL(res.cassems)}` : "R$ 0,00";
+        document.getElementById("detCassemsInfo").textContent = state.cassemsAtivo
+          ? `6% (${formatBRL(bruto * 0.06)}) + Fixo (${formatBRL(Math.min(4, state.cassemsBenef) * 35)})`
+          : "Não optante";
+
+        const rowFetems = document.getElementById("rowFetems");
+        if (res.fetems > 0) {
+          rowFetems.classList.remove("hidden");
+          document.getElementById("detFetemsVal").textContent = `- ${formatBRL(res.fetems)}`;
+        } else rowFetems.classList.add("hidden");
+
+        const rowPensao = document.getElementById("rowPensao");
+        if (state.pensao > 0) {
+          rowPensao.classList.remove("hidden");
+          document.getElementById("detPensaoVal").textContent = `- ${formatBRL(state.pensao)}`;
+        } else rowPensao.classList.add("hidden");
+
+        const rowOutros = document.getElementById("rowOutros");
+        if (state.outrosDescontos > 0) {
+          rowOutros.classList.remove("hidden");
+          document.getElementById("detOutrosVal").textContent = `- ${formatBRL(state.outrosDescontos)}`;
+        } else rowOutros.classList.add("hidden");
+
+        // Memória Passo a Passo Completa
+        const base40Val = BASES_40H[state.tabela][state.formacao];
+        document.getElementById("memPassoBruto").textContent =
+          state.mode === "tabela"
+            ? `1. Bruto: ${formatBRL(base40Val)} × (${formatNum(state.aulas)} ÷ 48 aulas) = ${formatBRL(brutoDet.vencimentoBase)}` +
+              (brutoDet.incentivoNoturno > 0 ? ` + Noturno (${formatNum(brutoDet.horasNot)}h): ${formatBRL(brutoDet.incentivoNoturno)} = ${formatBRL(res.bruto)}` : "")
+            : `1. Bruto informado: ${formatBRL(brutoDet.vencimentoBase)}` +
+              (brutoDet.incentivoNoturno > 0 ? ` + Noturno: ${formatBRL(brutoDet.incentivoNoturno)} = ${formatBRL(res.bruto)}` : "");
+
+        document.getElementById("memPassoInss").textContent =
+          `2. INSS (${res.inss.faixa}): desconto progressivo oficial = - ${formatBRL(res.inss.valor)}`;
+
+        document.getElementById("memIrpfLinha1").textContent =
+          `3. Base do IRRF: ${formatBRL(res.bruto)} − ${formatBRL(res.irrf.deducaoUsada)} (${res.irrf.tipoDeducao}) = ${formatBRL(res.irrf.base)}`;
+        document.getElementById("memIrpfLinha2").textContent =
+          `4. Imposto pela tabela progressiva: ${formatBRL(res.irrf.irTabela)}`;
+        document.getElementById("memIrpfLinha3").textContent =
+          res.irrf.reducao > 0
+            ? `5. Redutor Lei 15.270/2025: - ${formatBRL(res.irrf.reducao)} → IRRF retido: ${formatBRL(res.irrf.valor)}`
+            : `5. Sem redutor (bruto acima de R$ 7.350,00) → IRRF retido: ${formatBRL(res.irrf.valor)}`;
+
+        document.getElementById("memPassoLiquido").textContent =
+          `6. Salário Líquido Final: ${formatBRL(res.bruto)} (Bruto) − ${formatBRL(res.totalDescontos)} (Total de Descontos) = ${formatBRL(res.liquidoAtual)}`;
+
+        renderChart(res);
+        renderTabelaCompleta();
+        renderOtimizador();
+        renderPoderCompra(res);
+        renderDireitosSTF(res);
+      }
+
+      function renderOtimizador() {
+        const base40 = BASES_40H[state.tabela][state.formacao];
+        const filtroRegime = document.getElementById("selectFiltroRegime").value;
+        const rows = [];
+
+        let prevLiq = 0;
+        for (let n = 3; n <= 48; n++) {
+          const brutoBase = base40 * (n / 48);
+          const inss = calcularINSS2026(brutoBase).valor;
+          const irrf = calcularIRRF2026(brutoBase, inss, state.dependentes, state.pensao).valor;
+          const cassems = calcularCASSEMS(brutoBase, state.cassemsAtivo, state.cassemsBenef);
+          const fetems = state.fetemsAtivo ? (brutoBase * 0.02) : 0;
+          const desc = inss + irrf + cassems + fetems + state.pensao + state.outrosDescontos;
+          const liq = Math.max(0, brutoBase - desc);
+          const liqPorAula = liq / n;
+          const marginal = n === 3 ? liqPorAula : (liq - prevLiq);
+          prevLiq = liq;
+
+          rows.push({
+            n,
+            ch: ((n / 48) * 40).toFixed(1).replace(".", ","),
+            bruto: brutoBase,
+            desc,
+            descPct: brutoBase > 0 ? (desc / brutoBase) * 100 : 0,
+            irrf,
+            liq,
+            liqPorAula,
+            marginal
+          });
+        }
+
+        // Melhor até 20h (<= 24 aulas)
+        const ate20 = rows.filter((r) => r.n <= 24);
+        const best20 = ate20.reduce((best, cur) => (cur.liqPorAula > best.liqPorAula ? cur : best), ate20[0]);
+        document.getElementById("opt20hAulas").textContent = `${best20.n} aulas (${best20.ch}h)`;
+        document.getElementById("opt20hDetalhe").textContent =
+          `Líquido: ${formatBRL(best20.liq)} • ${formatBRL(best20.liqPorAula)}/aula`;
+
+        // Melhor ponto pré-tributação acima de 24 aulas (maior n com IRRF == 0, ou maior custo-benefício 25..48)
+        const acima24 = rows.filter((r) => r.n >= 25);
+        const isentosAcima24 = acima24.filter((r) => r.irrf === 0);
+        const bestPreTax = isentosAcima24.length > 0
+          ? isentosAcima24[isentosAcima24.length - 1]
+          : acima24.reduce((best, cur) => (cur.liqPorAula > best.liqPorAula ? cur : best), acima24[0]);
+
+        document.getElementById("opt40hAulas").textContent = `${bestPreTax.n} aulas (${bestPreTax.ch}h)`;
+        document.getElementById("opt40hDetalhe").textContent =
+          bestPreTax.irrf === 0
+            ? `Líquido: ${formatBRL(bestPreTax.liq)} • Última carga sem IRRF!`
+            : `Líquido: ${formatBRL(bestPreTax.liq)} • ${formatBRL(bestPreTax.liqPorAula)}/aula`;
+
+        const row48 = rows[rows.length - 1];
+        document.getElementById("optMarginal48").textContent = `+ ${formatBRL(row48.marginal)}`;
+        document.getElementById("optMarginal48Sub").textContent =
+          `Na 48ª aula você retém ${(100 - row48.descPct).toFixed(1).replace(".", ",")}% líquido (${formatBRL(row48.liqPorAula)}/aula média)`;
+
+        // Gráfico (Resumo de marcos em barras largas para leitura fácil no celular vs. todas as aulas)
+        const filteredRows = filtroRegime === "20h" ? ate20 : (filtroRegime === "40h" ? acima24 : rows);
+        const marcos = [12, 18, 24, 28, 30, 34, 36, 40, 44, 48];
+        const chartRows = state.chartResumoMode
+          ? filteredRows.filter((r) => marcos.includes(r.n) || r.n === best20.n || r.n === bestPreTax.n)
+          : filteredRows;
+
+        const ctx = document.getElementById("optimizerChart");
+        if (ctx && typeof Chart !== "undefined") {
+          const labels = chartRows.map((r) => `${r.n}a`);
+          const dataMedia = chartRows.map((r) => Number(r.liqPorAula.toFixed(2)));
+          const dataMarginal = chartRows.map((r) => Number(r.marginal.toFixed(2)));
+          const chartType = state.chartResumoMode ? "bar" : "line";
+
+          if (optimizerChartInstance && optimizerChartInstance.config.type !== chartType) {
+            optimizerChartInstance.destroy();
+            optimizerChartInstance = null;
+          }
+
+          if (optimizerChartInstance) {
+            optimizerChartInstance.data.labels = labels;
+            optimizerChartInstance.data.datasets[0].data = dataMedia;
+            optimizerChartInstance.data.datasets[1].data = dataMarginal;
+            optimizerChartInstance.update();
+          } else {
+            optimizerChartInstance = new Chart(ctx, {
+              type: chartType,
+              data: {
+                labels,
+                datasets: [
+                  {
+                    label: "Média Líquida por Aula (R$)",
+                    data: dataMedia,
+                    backgroundColor: state.chartResumoMode ? "#0f766e" : "rgba(15, 118, 110, 0.12)",
+                    borderColor: "#0f766e",
+                    borderRadius: 6,
+                    tension: 0.25,
+                    borderWidth: 2.5,
+                    pointRadius: 2.5
+                  },
+                  {
+                    label: "Quanto Rende a Aula Extra (R$)",
+                    data: dataMarginal,
+                    backgroundColor: state.chartResumoMode ? "#f59e0b" : "rgba(245, 158, 11, 0.12)",
+                    borderColor: "#d97706",
+                    borderRadius: 6,
+                    tension: 0.25,
+                    borderWidth: 2,
+                    borderDash: state.chartResumoMode ? [] : [4, 4],
+                    pointRadius: 2.5
+                  }
+                ]
+              },
+              options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                  legend: { position: "bottom", labels: { font: { size: 12, family: "Inter" }, boxWidth: 14 } },
+                  tooltip: {
+                    callbacks: {
+                      label: (c) => `${c.dataset.label}: ${formatBRL(c.raw)}`
+                    }
+                  }
+                },
+                scales: {
+                  x: { ticks: { font: { size: 12 } } },
+                  y: {
+                    beginAtZero: true,
+                    ticks: { font: { size: 11 }, callback: (v) => "R$ " + v }
+                  }
+                }
+              }
+            });
+          }
+        }
+
+        // Tabela resumida dos pontos-chave ou filtro selecionado
+        const tbody = document.getElementById("optTabelaCorpo");
+        let html = "";
+        filteredRows.forEach((r) => {
+          let diag = "Faixa intermediária";
+          if (r.n === best20.n) diag = "Melhor até 20h";
+          else if (r.n === bestPreTax.n && r.irrf === 0) diag = "Limite sem IRRF";
+          else if (r.bruto > 5000 && r.bruto <= 7350) diag = "Redução parcial IRRF";
+          else if (r.bruto > 7350) diag = "Alíquota cheia IRRF";
+          else if (r.irrf === 0) diag = "Isento de IRRF";
+
+          const highlight = (r.n === best20.n || r.n === bestPreTax.n) ? "bg-emerald-50/70 font-semibold" : "";
+          html += `
+            <tr class="${highlight}">
+              <td class="px-3 py-2 whitespace-nowrap">${r.n} aulas (${r.ch}h)</td>
+              <td class="px-3 py-2 text-right whitespace-nowrap">${formatBRL(r.bruto)}</td>
+              <td class="px-3 py-2 text-right whitespace-nowrap text-rose-600">${formatBRL(r.desc)} <span class="text-xs text-rose-400">(${r.descPct.toFixed(1).replace(".", ",")}%)</span></td>
+              <td class="px-3 py-2 text-right whitespace-nowrap font-bold text-slate-900">${formatBRL(r.liq)}</td>
+              <td class="px-3 py-2 text-right whitespace-nowrap text-teal-800 font-semibold">${formatBRL(r.liqPorAula)}</td>
+              <td class="px-3 py-2 text-right whitespace-nowrap text-amber-700">+ ${formatBRL(r.marginal)}</td>
+              <td class="px-3 py-2 whitespace-nowrap text-xs text-slate-600">${diag}</td>
+            </tr>
+          `;
+        });
+        tbody.innerHTML = html;
+      }
+
+      function renderPoderCompra(res) {
+        const rawCesta = parseFloat(document.getElementById("inputCestaBasica").value);
+        const avisoEl = document.getElementById("cestaAvisoMinimo");
+        let cesta = 848.51;
+        if (!isNaN(rawCesta) && rawCesta >= 250) {
+          cesta = rawCesta;
+          avisoEl.classList.add("hidden");
+        } else {
+          avisoEl.classList.remove("hidden");
+        }
+
+        const comb = Math.max(0, parseFloat(document.getElementById("inputGastoCombustivel").value) || 0);
+        const ener = Math.max(0, parseFloat(document.getElementById("inputGastoEnergia").value) || 0);
+        const merc = Math.max(0, parseFloat(document.getElementById("inputGastoMercado").value) || 0);
+        const inv = Math.max(0, parseFloat(document.getElementById("inputCustosInvisiveis").value) || 0);
+
+        const qtdCestas = res.liquidoAtual / cesta;
+        const pctCesta = res.liquidoAtual > 0 ? (cesta / res.liquidoAtual) * 100 : 0;
+        const cestaFamilia = cesta * 3;
+        const pctFamilia = res.liquidoAtual > 0 ? (cestaFamilia / res.liquidoAtual) * 100 : 0;
+
+        document.getElementById("pcCestaFamiliaVal").textContent = formatBRL(cestaFamilia);
+        document.getElementById("pcQtdCestas").textContent = `${qtdCestas.toFixed(1).replace(".", ",")} cestas`;
+        document.getElementById("pcPctCesta").textContent =
+          `1 cesta individual (${formatBRL(cesta)}) consome ${pctCesta.toFixed(1).replace(".", ",")}% do líquido`;
+        document.getElementById("pcFamiliaCesta").textContent =
+          `Alimentação Familiar (3 cestas = ${formatBRL(cestaFamilia)}): consome ${pctFamilia.toFixed(1).replace(".", ",")}% do líquido`;
+        document.getElementById("pcFormulaCesta").textContent =
+          `Conta: ${formatBRL(res.liquidoAtual)} ÷ ${formatBRL(cesta)} = ${qtdCestas.toFixed(2).replace(".", ",")} cestas`;
+
+        const dieeseNec = 7750.01;
+        const diffDieese = res.liquidoAtual - dieeseNec;
+        const dieeseEl = document.getElementById("pcDieeseDiff");
+        if (diffDieese >= 0) {
+          dieeseEl.textContent = `+ ${formatBRL(diffDieese)} acima do mínimo necessário`;
+          dieeseEl.className = "text-sm text-emerald-700 font-semibold";
+        } else {
+          dieeseEl.textContent = `${formatBRL(Math.abs(diffDieese))} abaixo do necessário (${formatBRL(res.liquidoAtual)} − R$ 7.750,01)`;
+          dieeseEl.className = "text-sm text-rose-600 font-semibold";
+        }
+
+        const totalTributavel = comb + ener + merc;
+        const totalGastosMensais = totalTributavel + inv;
+        const icms17 = totalTributavel * 0.17;
+        const icms19 = totalTributavel * 0.19;
+        const diffIcmsAno = (icms19 - icms17) * 12;
+        const saldoPos = Math.max(0, res.liquidoAtual - totalGastosMensais);
+
+        document.getElementById("pcIcms17").textContent = formatBRL(icms17);
+        document.getElementById("pcIcms17Formula").textContent = `17% de ${formatBRL(totalTributavel)}`;
+        document.getElementById("pcIcms19").textContent = formatBRL(icms19);
+        document.getElementById("pcIcmsDiffAno").textContent = `+ ${formatBRL(diffIcmsAno)}/ano de imposto`;
+        document.getElementById("pcLiquidoRealPos").textContent = formatBRL(saldoPos);
+        document.getElementById("pcSaldoFormula").textContent = `${formatBRL(res.liquidoAtual)} − ${formatBRL(totalGastosMensais)}`;
+
+        const compPctReal = res.liquidoAtual > 0 ? (totalGastosMensais / res.liquidoAtual) * 100 : 0;
+        const compPctBar = Math.min(100, compPctReal);
+        document.getElementById("pcBarraPct").textContent =
+          `${formatBRL(totalGastosMensais)} (${compPctReal.toFixed(1).replace(".", ",")}% do líquido)`;
+        document.getElementById("pcBarraFill").style.width = `${compPctBar.toFixed(1)}%`;
+
+        const aulasRef = state.mode === "tabela" ? Math.max(1, state.aulas) : 48;
+        const liqPorAula = res.liquidoAtual / aulasRef;
+        const aulasParaCesta = liqPorAula > 0 ? (cesta / liqPorAula) : 0;
+        const aulasParaFamilia = liqPorAula > 0 ? (cestaFamilia / liqPorAula) : 0;
+        document.getElementById("pcDeepHorasCesta").innerHTML =
+          `<strong>Horas de sala para comer:</strong> com o seu líquido médio de <strong>${formatBRL(liqPorAula)} por aula</strong>, você precisa trabalhar <strong>${aulasParaCesta.toFixed(1).replace(".", ",")} aulas</strong> para pagar 1 cesta individual (${formatBRL(cesta)}) ou <strong>${aulasParaFamilia.toFixed(1).replace(".", ",")} aulas</strong> para cobrir a alimentação de uma família de 4 pessoas (${formatBRL(cestaFamilia)}).`;
+      }
+
+      function renderDireitosSTF(res) {
+        const decimoMes = res.bruto / 12;
+        const tercoFeriasMes = res.bruto / 36;
+        const decimoFeriasMes = decimoMes + tercoFeriasMes;
+
+        document.getElementById("dir13FeriasMes").textContent = `${formatBRL(decimoFeriasMes)}/mês`;
+        document.getElementById("dir13FeriasAno").textContent = `Total em 12 meses: ${formatBRL(decimoFeriasMes * 12)}`;
+        document.getElementById("dir13FeriasDetalhe").textContent =
+          `13º (1/12): ${formatBRL(decimoMes)} + 1/3 Férias (1/36): ${formatBRL(tercoFeriasMes)}`;
+
+        document.getElementById("dirIrrfEstado").textContent = `${formatBRL(res.irrf.valor)}/mês`;
+        document.getElementById("dirIrrfEstadoAno").textContent =
+          `${formatBRL(res.irrf.valor * 12)}/ano ficam no Tesouro de MS`;
+
+        const efetivoIni = 11025.00;
+        const gapPct = ((res.bruto - efetivoIni) / efetivoIni) * 100;
+        const gapReais = res.bruto - efetivoIni;
+        document.getElementById("dirGapEfetivo").textContent = `${gapPct.toFixed(1).replace(".", ",")}%`;
+        document.getElementById("dirGapEfetivoReais").textContent =
+          `Diferença: ${(gapReais >= 0 ? "+ " : "- ") + formatBRL(Math.abs(gapReais))}/mês`;
+
+        const diffMedia = res.bruto - 12928.34;
+        document.getElementById("dirGapMediaVal").textContent =
+          (diffMedia >= 0 ? "+ " : "- ") + formatBRL(Math.abs(diffMedia));
+        document.getElementById("dirFgtsMes").textContent = `${formatBRL(res.bruto * 0.08)}/mês`;
+
+        const pisoProp = state.mode === "tabela" ? (5130.63 * (state.aulas / 48)) : 5130.63;
+        const diffPiso = res.bruto - pisoProp;
+        document.getElementById("fetemsPisoMsg").textContent =
+          `Na sua simulação, o bruto de ${formatBRL(res.bruto)} está ${diffPiso >= 0 ? formatBRL(diffPiso) + " acima" : formatBRL(Math.abs(diffPiso)) + " abaixo"} do Piso Nacional proporcional (${formatBRL(pisoProp)} para ${state.mode === "tabela" ? formatNum(state.aulas) + " aulas" : "40h"}), com garantia constitucional de 1/3 de hora-atividade (Lei nº 11.738/2008).`;
+
+        const baseLic = BASES_40H[state.tabela].licenciatura;
+        document.getElementById("fetemsTitulacaoMsg").textContent =
+          `Na Tabela ${state.tabela} de convocados (Decreto nº 16.754/2026), um professor com Licenciatura, Especialização, Mestrado ou Doutorado recebe exatamente o mesmo vencimento base de ${formatBRL(baseLic)} (40h) — uma perda de ${formatBRL(11025 - baseLic)}/mês em relação ao efetivo em início de carreira (R$ 11.025,00), sem adicional por pós-graduação nem progressão horizontal.`;
+
+        const ctx = document.getElementById("stfCompareChart");
+        if (ctx && typeof Chart !== "undefined") {
+          const labels = ["Piso Nacional", "Seu Bruto", "Efetivo Inicial (FETEMS)", "Média Efetivos (SED-MS)"];
+          const data = [5130.63, Number(res.bruto.toFixed(2)), 11025.00, 12928.34];
+          const colors = ["#94a3b8", "#0f766e", "#2563eb", "#4f46e5"];
+
+          if (stfCompareChartInstance) {
+            stfCompareChartInstance.data.datasets[0].data = data;
+            stfCompareChartInstance.update();
+          } else {
+            stfCompareChartInstance = new Chart(ctx, {
+              type: "bar",
+              data: {
+                labels,
+                datasets: [{
+                  label: "Remuneração Bruta (R$)",
+                  data,
+                  backgroundColor: colors,
+                  borderRadius: 8
+                }]
+              },
+              options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                  y: { ticks: { callback: (v) => "R$ " + v } }
+                }
+              }
+            });
+          }
+        }
+      }
+
+      // Eventos de Abas
+      document.querySelectorAll(".tab-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const target = btn.dataset.tab;
+          document.querySelectorAll(".tab-btn").forEach((b) => {
+            b.classList.remove("bg-white", "text-teal-900", "font-semibold", "shadow-sm");
+            b.classList.add("bg-white/10", "text-white", "font-medium");
+          });
+          btn.classList.add("bg-white", "text-teal-900", "font-semibold", "shadow-sm");
+          btn.classList.remove("bg-white/10", "text-white", "font-medium");
+
+          document.querySelectorAll(".tab-panel").forEach((p) => p.classList.add("hidden"));
+          document.getElementById(`tab-${target}`).classList.remove("hidden");
+        });
+      });
+
+      // Eventos de Modo
+      document.getElementById("modeTabelaBtn").addEventListener("click", () => {
+        state.mode = "tabela";
+        document.getElementById("modeTabelaBtn").classList.add("bg-white", "text-teal-800", "shadow-sm", "font-semibold");
+        document.getElementById("modeCustomBtn").classList.remove("bg-white", "text-teal-800", "shadow-sm", "font-semibold");
+        document.getElementById("tabelaInputs").classList.remove("hidden");
+        document.getElementById("customInputs").classList.add("hidden");
+        render();
+      });
+
+      document.getElementById("modeCustomBtn").addEventListener("click", () => {
+        state.mode = "custom";
+        document.getElementById("modeCustomBtn").classList.add("bg-white", "text-teal-800", "shadow-sm", "font-semibold");
+        document.getElementById("modeTabelaBtn").classList.remove("bg-white", "text-teal-800", "shadow-sm", "font-semibold");
+        document.getElementById("customInputs").classList.remove("hidden");
+        document.getElementById("tabelaInputs").classList.add("hidden");
+        render();
+      });
+
+      // Eventos de Inputs
+      document.getElementById("selectTabela").addEventListener("change", (e) => {
+        state.tabela = e.target.value;
+        render();
+      });
+
+      document.getElementById("selectFormacao").addEventListener("change", (e) => {
+        state.formacao = e.target.value;
+        render();
+      });
+
+      document.getElementById("rangeAulas").addEventListener("input", (e) => {
+        state.aulas = parseFloat(e.target.value) || 48;
+        document.getElementById("inputAulas").value = state.aulas;
+        render();
+      });
+
+      document.getElementById("inputAulas").addEventListener("input", (e) => {
+        let raw = String(e.target.value).replace(",", ".");
+        let v = parseFloat(raw);
+        if (isNaN(v)) return;
+        v = Math.min(48, Math.max(1, v));
+        state.aulas = v;
+        document.getElementById("rangeAulas").value = v;
+        render();
+      });
+
+      document.getElementById("toggleNoturno").addEventListener("change", (e) => {
+        state.noturnoAtivo = e.target.checked;
+        document.getElementById("noturnoBox").classList.toggle("hidden", !state.noturnoAtivo);
+        render();
+      });
+
+      document.getElementById("inputHorasNoturno").addEventListener("input", (e) => {
+        let raw = String(e.target.value).replace(",", ".");
+        let v = parseFloat(raw);
+        if (isNaN(v)) v = 0;
+        state.horasNoturno = Math.min(180, Math.max(0, v));
+        render();
+      });
+
+      document.getElementById("toggleFetems").addEventListener("change", (e) => {
+        state.fetemsAtivo = e.target.checked;
+        render();
+      });
+
+      document.getElementById("inputCustomBruto").addEventListener("input", (e) => {
+        state.customBruto = Math.max(0, parseFloat(e.target.value) || 0);
+        render();
+      });
+
+      document.getElementById("btnDepMinus").addEventListener("click", () => {
+        state.dependentes = Math.max(0, state.dependentes - 1);
+        document.getElementById("valDependentes").textContent = state.dependentes;
+        render();
+      });
+
+      document.getElementById("btnDepPlus").addEventListener("click", () => {
+        state.dependentes = Math.min(10, state.dependentes + 1);
+        document.getElementById("valDependentes").textContent = state.dependentes;
+        render();
+      });
+
+      document.getElementById("toggleCassems").addEventListener("change", (e) => {
+        state.cassemsAtivo = e.target.checked;
+        document.getElementById("cassemsBenefBox").classList.toggle("hidden", !state.cassemsAtivo);
+        render();
+      });
+
+      document.getElementById("selectCassemsBenef").addEventListener("change", (e) => {
+        state.cassemsBenef = parseInt(e.target.value, 10) || 1;
+        render();
+      });
+
+      document.getElementById("inputPensao").addEventListener("input", (e) => {
+        state.pensao = Math.max(0, parseFloat(e.target.value) || 0);
+        render();
+      });
+
+      document.getElementById("inputOutrosDescontos").addEventListener("input", (e) => {
+        state.outrosDescontos = Math.max(0, parseFloat(e.target.value) || 0);
+        render();
+      });
+
+      document.getElementById("filtroAulas").addEventListener("input", (e) => {
+        state.filtroTabela = e.target.value;
+        renderTabelaCompleta();
+      });
+
+      document.getElementById("tabelaCorpo").addEventListener("click", (e) => {
+        const compBtn = e.target.closest("button[data-comp-toggle]");
+        if (compBtn) {
+          e.stopPropagation();
+          const a = parseInt(compBtn.dataset.compToggle, 10);
+          if (state.compareList.includes(a)) {
+            state.compareList = state.compareList.filter((x) => x !== a);
+          } else {
+            state.compareList.push(a);
+          }
+          renderTabelaCompleta();
+          return;
+        }
+        const tr = e.target.closest("tr[data-aulas]");
+        if (!tr) return;
+        state.mode = "tabela";
+        state.aulas = parseInt(tr.dataset.aulas, 10);
+        document.getElementById("rangeAulas").value = state.aulas;
+        document.getElementById("inputAulas").value = state.aulas;
+        document.querySelector('.tab-btn[data-tab="simulador"]').click();
+        document.getElementById("modeTabelaBtn").click();
+        render();
+      });
+
+      document.getElementById("btnReset").addEventListener("click", () => {
+        state.mode = "tabela";
+        state.tabela = "A";
+        state.formacao = "licenciatura";
+        state.aulas = 48;
+        state.noturnoAtivo = false;
+        state.horasNoturno = 0;
+        state.fetemsAtivo = false;
+        state.dependentes = 0;
+        document.getElementById("toggleFetems").checked = false;
+        document.getElementById("toggleNoturno").checked = false;
+        document.getElementById("noturnoBox").classList.add("hidden");
+        document.getElementById("inputHorasNoturno").value = "0";
+        state.cassemsAtivo = true;
+        state.cassemsBenef = 1;
+        state.pensao = 0;
+        state.outrosDescontos = 0;
+
+        document.getElementById("selectTabela").value = "A";
+        document.getElementById("selectFormacao").value = "licenciatura";
+        document.getElementById("rangeAulas").value = 48;
+        document.getElementById("inputAulas").value = 48;
+        document.getElementById("valDependentes").textContent = "0";
+        document.getElementById("toggleCassems").checked = true;
+        document.getElementById("cassemsBenefBox").classList.remove("hidden");
+        document.getElementById("selectCassemsBenef").value = "1";
+        document.getElementById("inputPensao").value = "0";
+        document.getElementById("inputOutrosDescontos").value = "0";
+        document.getElementById("modeTabelaBtn").click();
+      });
+
+      document.getElementById("selectFiltroRegime").addEventListener("change", renderOtimizador);
+      document.getElementById("btnPresetCG").addEventListener("click", () => {
+        document.getElementById("inputCestaBasica").value = "848.51";
+        render();
+      });
+      document.getElementById("btnPresetInterior").addEventListener("click", () => {
+        document.getElementById("inputCestaBasica").value = "790.00";
+        render();
+      });
+      ["inputCestaBasica", "inputGastoCombustivel", "inputGastoEnergia", "inputGastoMercado", "inputCustosInvisiveis"].forEach((id) => {
+        document.getElementById(id).addEventListener("input", render);
+      });
+
+      function applyFontSize(cls) {
+        document.documentElement.classList.remove("font-xsmall", "font-small", "font-normal", "font-large", "font-xlarge");
+        document.documentElement.classList.add(cls);
+        document.querySelectorAll(".font-ctrl-btn").forEach((b) => {
+          const active = b.dataset.font === cls;
+          b.classList.toggle("bg-white", active);
+          b.classList.toggle("text-teal-900", active);
+          b.classList.toggle("shadow-sm", active);
+          b.classList.toggle("text-white", !active);
+        });
+        try { localStorage.setItem("calc_ms_font", cls); } catch (e) {}
+      }
+
+      document.querySelectorAll(".font-ctrl-btn").forEach((btn) => {
+        btn.addEventListener("click", () => applyFontSize(btn.dataset.font));
+      });
+
+      document.getElementById("compCardsContainer").addEventListener("click", (e) => {
+        const rm = e.target.closest("button[data-comp-remove]");
+        if (!rm) return;
+        const a = parseInt(rm.dataset.compRemove, 10);
+        state.compareList = state.compareList.filter((x) => x !== a);
+        renderTabelaCompleta();
+      });
+
+      document.getElementById("btnAddCompAulas").addEventListener("click", () => {
+        const inp = document.getElementById("inputAddCompAulas");
+        const v = parseInt(inp.value, 10);
+        if (!isNaN(v) && v >= 3 && v <= 48) {
+          if (!state.compareList.includes(v)) state.compareList.push(v);
+          inp.value = "";
+          renderTabelaCompleta();
+        }
+      });
+
+      document.getElementById("btnClearComp").addEventListener("click", () => {
+        state.compareList = [];
+        renderTabelaCompleta();
+      });
+
+      document.getElementById("btnFillBestComp").addEventListener("click", () => {
+        const base40 = BASES_40H[state.tabela][state.formacao];
+        let best20 = 24, best20Rate = -1;
+        let bestPreTax = 30;
+        for (let n = 3; n <= 48; n++) {
+          const bruto = base40 * (n / 48);
+          const inss = calcularINSS2026(bruto).valor;
+          const irrf = calcularIRRF2026(bruto, inss, state.dependentes, state.pensao).valor;
+          const cassems = calcularCASSEMS(bruto, state.cassemsAtivo, state.cassemsBenef);
+          const fetems = state.fetemsAtivo ? (bruto * 0.02) : 0;
+          const liq = Math.max(0, bruto - inss - irrf - cassems - fetems - state.pensao - state.outrosDescontos);
+          const rate = liq / n;
+          if (n <= 24 && rate > best20Rate) {
+            best20Rate = rate;
+            best20 = n;
+          }
+          if (irrf === 0) bestPreTax = n;
+        }
+        const picks = Array.from(new Set([best20, bestPreTax, 36, 48])).sort((a, b) => a - b);
+        state.compareList = picks;
+        renderTabelaCompleta();
+      });
+
+      document.getElementById("btnToggleChartMode").addEventListener("click", (e) => {
+        state.chartResumoMode = !state.chartResumoMode;
+        e.target.textContent = state.chartResumoMode ? "Ver todas as 46 aulas" : "Ver resumo (mais fácil no celular)";
+        renderOtimizador();
+      });
+
+      window.addEventListener("load", () => {
+        let savedFont = "font-normal";
+        try { savedFont = localStorage.getItem("calc_ms_font") || "font-normal"; } catch (e) {}
+        applyFontSize(savedFont);
+        render();
+      });
+    })();
+  </script>
+</body>
+</html>
